@@ -81,7 +81,7 @@
                     "name": "Rotate",
                     "type": "Value",
                     "id": "130b8331-7cbc-416d-af86-c5c41c554710",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -91,7 +91,7 @@
                 {
                     "name": "",
                     "id": "017f6403-4f16-4d8c-81c5-67daccaa5986",
-                    "path": "<Joystick>/stick/up",
+                    "path": "<Gamepad>/leftStick/up",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -102,7 +102,7 @@
                 {
                     "name": "",
                     "id": "57ed1d0f-5fbd-4246-b196-69ea64ff640a",
-                    "path": "<Joystick>/stick/down",
+                    "path": "<Gamepad>/leftStick/down",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -113,7 +113,7 @@
                 {
                     "name": "",
                     "id": "dc8cfef3-e780-42c6-b9ec-f16302b35902",
-                    "path": "<Joystick>/stick/left",
+                    "path": "<Gamepad>/leftStick/left",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -124,7 +124,7 @@
                 {
                     "name": "",
                     "id": "1e70826c-aadb-4eb8-88e4-d14e27b9b3e2",
-                    "path": "<Joystick>/stick/right",
+                    "path": "<Gamepad>/leftStick/right",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -179,7 +179,7 @@
                 {
                     "name": "",
                     "id": "8432552b-bbd0-4323-94f2-ce59bc3420a1",
-                    "path": "<Joystick>/stick",
+                    "path": "<Gamepad>/leftStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
