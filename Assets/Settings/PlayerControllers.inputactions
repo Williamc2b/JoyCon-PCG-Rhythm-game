@@ -1,0 +1,194 @@
+{
+    "name": "PlayerControllers",
+    "maps": [
+        {
+            "name": "Gameplay",
+            "id": "eb97ffe4-ff10-40c5-b375-6ca48fdc36a8",
+            "actions": [
+                {
+                    "name": "Flick(Up)",
+                    "type": "Button",
+                    "id": "42758521-44d8-47ff-81d9-a8ea0b9311dc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Flick(Down)",
+                    "type": "Button",
+                    "id": "270acb37-53c4-4cce-94f9-b16646f0338b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Flick(Left)",
+                    "type": "Button",
+                    "id": "eeb161d4-e306-4b17-97d9-ffa55b47bca7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Flick(Right)",
+                    "type": "Button",
+                    "id": "1f747c49-4c24-4ce4-aefb-635d55706f96",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Hold(Up)",
+                    "type": "Button",
+                    "id": "78d9a92f-4ee3-487c-9507-c001d9f24338",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Hold(Down)",
+                    "type": "Button",
+                    "id": "c157f2f0-edd0-474e-9e9a-63223a391876",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Hold(Left)",
+                    "type": "Button",
+                    "id": "92a661e9-86eb-44c9-a94b-8ca21438231d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Hold(Right)",
+                    "type": "Button",
+                    "id": "711f4659-337f-4a97-b435-b1be28bb3ad3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Rotate",
+                    "type": "Value",
+                    "id": "130b8331-7cbc-416d-af86-c5c41c554710",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "017f6403-4f16-4d8c-81c5-67daccaa5986",
+                    "path": "<Joystick>/stick/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Flick(Up)",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "57ed1d0f-5fbd-4246-b196-69ea64ff640a",
+                    "path": "<Joystick>/stick/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Flick(Down)",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dc8cfef3-e780-42c6-b9ec-f16302b35902",
+                    "path": "<Joystick>/stick/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Flick(Left)",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1e70826c-aadb-4eb8-88e4-d14e27b9b3e2",
+                    "path": "<Joystick>/stick/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Flick(Right)",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d9637412-6f6d-4eca-b91e-c7a98675285a",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hold(Up)",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8ee51cf7-d96b-45c4-b3dd-2d2e51b4cd3f",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hold(Down)",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b6714909-7337-4440-8965-779cfb6a4f92",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hold(Left)",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "861d836c-d9f5-41c0-92b2-1f35915b7c46",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hold(Right)",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8432552b-bbd0-4323-94f2-ce59bc3420a1",
+                    "path": "<Joystick>/stick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "JoyCon PCG Rhythm Game.sln"
+    "dotnet.defaultSolution": "JoyCon-PCG-Rhythm-game.sln"
 }
