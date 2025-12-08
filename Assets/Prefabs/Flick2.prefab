@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 913394643008976136}
   - component: {fileID: 5159158914888821761}
+  - component: {fileID: 5168120153260257234}
   m_Layer: 0
   m_Name: Flick2
   m_TagString: Untagged
@@ -87,3 +88,16 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &5168120153260257234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526390286081296520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8698f0cdf9b33444292f6ff10e51b40e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  JudgementLine: {fileID: 0}
