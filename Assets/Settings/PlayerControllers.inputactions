@@ -7,39 +7,39 @@
             "actions": [
                 {
                     "name": "Flick(Up)",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "42758521-44d8-47ff-81d9-a8ea0b9311dc",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Flick(Down)",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "270acb37-53c4-4cce-94f9-b16646f0338b",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Flick(Left)",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "eeb161d4-e306-4b17-97d9-ffa55b47bca7",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Flick(Right)",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "1f747c49-4c24-4ce4-aefb-635d55706f96",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Hold(Up)",
@@ -91,7 +91,7 @@
                 {
                     "name": "",
                     "id": "017f6403-4f16-4d8c-81c5-67daccaa5986",
-                    "path": "<Gamepad>/leftStick/up",
+                    "path": "<Gamepad>/leftStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -102,7 +102,7 @@
                 {
                     "name": "",
                     "id": "57ed1d0f-5fbd-4246-b196-69ea64ff640a",
-                    "path": "<Gamepad>/leftStick/down",
+                    "path": "<Gamepad>/leftStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -113,7 +113,7 @@
                 {
                     "name": "",
                     "id": "dc8cfef3-e780-42c6-b9ec-f16302b35902",
-                    "path": "<Gamepad>/leftStick/left",
+                    "path": "<Gamepad>/leftStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -124,7 +124,7 @@
                 {
                     "name": "",
                     "id": "1e70826c-aadb-4eb8-88e4-d14e27b9b3e2",
-                    "path": "<Gamepad>/leftStick/right",
+                    "path": "<Gamepad>/leftStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

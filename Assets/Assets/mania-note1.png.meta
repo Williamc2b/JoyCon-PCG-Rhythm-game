@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      mania-note1_0: 4876590320192277771
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

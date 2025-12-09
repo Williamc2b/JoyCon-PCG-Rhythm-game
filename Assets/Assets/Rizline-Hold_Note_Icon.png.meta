@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Rizline-Hold_Note_Icon_0: -9012952497612896925
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
