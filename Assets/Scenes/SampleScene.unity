@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 22894336}
   - component: {fileID: 22894335}
   m_Layer: 0
-  m_Name: Square
+  m_Name: Boundary1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -217,7 +217,7 @@ GameObject:
   - component: {fileID: 239028532}
   - component: {fileID: 239028531}
   m_Layer: 0
-  m_Name: "\u2014Pngtree\u2014ring black circle_5487766_0 (1)"
+  m_Name: Telegraph Line
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -556,7 +556,7 @@ GameObject:
   - component: {fileID: 706345573}
   - component: {fileID: 706345574}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Lane1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -604,7 +604,7 @@ GameObject:
   - component: {fileID: 1578944231}
   - component: {fileID: 1578944232}
   m_Layer: 0
-  m_Name: GameObject (1)
+  m_Name: Lane2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -652,7 +652,7 @@ GameObject:
   - component: {fileID: 1802617691}
   - component: {fileID: 1802617692}
   m_Layer: 0
-  m_Name: GameObject (2)
+  m_Name: Lane3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -700,7 +700,7 @@ GameObject:
   - component: {fileID: 1912606723}
   - component: {fileID: 1912606724}
   m_Layer: 0
-  m_Name: GameObject (3)
+  m_Name: Lane4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -748,7 +748,7 @@ GameObject:
   - component: {fileID: 2026047239}
   - component: {fileID: 2026047238}
   m_Layer: 0
-  m_Name: "\u2014Pngtree\u2014ring black circle_5487766_0"
+  m_Name: Judgement Line
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -889,7 +889,7 @@ GameObject:
   - component: {fileID: 2138996465}
   - component: {fileID: 2138996464}
   m_Layer: 0
-  m_Name: Square (1)
+  m_Name: Boundary2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
