@@ -96,10 +96,11 @@ public class BeatManager : MonoBehaviour
         body.transform.localPosition = Vector3.zero;
         body.transform.localRotation = Quaternion.identity;
         float travelSpeed = 11f / noteSpawnFrequency;
-        float bodyLength = spawn_hold.hold_Duration * travelSpeed* spawn_hold.bodymultiplier; // Length of body based on duration and multiplier
+        float bodyLength = spawn_hold.hold_Duration * travelSpeed* spawn_hold.bodymultiplier;
         Vector3 bodyScale = body.transform.localScale;
-        bodyScale.y = bodyLength;
+        bodyScale.y = bodyLength;//stretch body for hold duration
         body.transform.localScale = bodyScale;
+        //TODO: Implement gradual spawning of body segments
         
         //tail
         GameObject spawnedTail = Instantiate(spawn_hold.Tail, holdNote.transform);
