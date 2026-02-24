@@ -89,24 +89,35 @@ public class BeatManager : MonoBehaviour
         //head
         GameObject head= Instantiate(spawn_hold.Head, holdNote.transform);
         head.transform.localPosition = Vector3.zero;
-        head.transform.localRotation = Quaternion.identity;
         
         //body
         GameObject body = Instantiate(spawn_hold.Lane, holdNote.transform);
         body.transform.localPosition = Vector3.zero;
-        body.transform.localRotation = Quaternion.identity;
+        SpriteRenderer bodySpriteRenderer = body.GetComponent<SpriteRenderer>();
+        bodySpriteRenderer.drawMode = SpriteDrawMode.Tiled;
+
         float travelSpeed = 11f / noteSpawnFrequency;
-        float bodyLength = spawn_hold.hold_Duration * travelSpeed* spawn_hold.bodymultiplier;
-        Vector3 bodyScale = body.transform.localScale;
-        bodyScale.y = bodyLength;//stretch body for hold duration
-        body.transform.localScale = bodyScale;
-        //TODO: Implement gradual spawning of body segments
+        //float bodyLength = spawn_hold.hold_Duration * travelSpeed* spawn_hold.bodymultiplier;
+        float bodyLength = hold_duration * travelSpeed * spawn_hold.bodymultiplier;
+
         
         //tail
         GameObject spawnedTail = Instantiate(spawn_hold.Tail, holdNote.transform);
         spawnedTail.transform.localPosition = new Vector3(0, -bodyLength, 0);
         spawnedTail.transform.localRotation = Quaternion.identity;
         yield return new WaitForSeconds(hold_duration);
+
+        float elapsed = 0f;
+        while (elapsed < hold_duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / hold_duration;
+            bodySpriteRenderer.size = new Vector2(bodySpriteRenderer.size.x, Mathf.Lerp(0, bodyLength, t));
+            yield return null;
+        }
+        bodySpriteRenderer.size = new Vector2(bodySpriteRenderer.size.x, bodyLength);
+        HoldnoteControls holdNoteControl = holdNote.AddComponent<HoldnoteControls>();
+        holdNoteControl.speed = travelSpeed;
 
     }
     // Update is called once per frame
