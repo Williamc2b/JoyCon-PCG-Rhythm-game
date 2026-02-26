@@ -85,7 +85,10 @@ public class BeatManager : MonoBehaviour
         GameObject holdNote = new GameObject("HoldNote");
         holdNote.transform.position = lane.transform.position + spawnoffset;
         holdNote.transform.rotation = rotation;
-        
+        float travelSpeed = 11f / noteSpawnFrequency;
+        //float bodyLength = spawn_hold.hold_Duration * travelSpeed* spawn_hold.bodymultiplier;
+        float bodyLength = hold_duration * travelSpeed * spawn_hold.bodymultiplier;
+
         //head
         GameObject head= Instantiate(spawn_hold.Head, holdNote.transform);
         head.transform.localPosition = Vector3.zero;
@@ -96,16 +99,14 @@ public class BeatManager : MonoBehaviour
         SpriteRenderer bodySpriteRenderer = body.GetComponent<SpriteRenderer>();
         bodySpriteRenderer.drawMode = SpriteDrawMode.Tiled;
 
-        float travelSpeed = 11f / noteSpawnFrequency;
-        //float bodyLength = spawn_hold.hold_Duration * travelSpeed* spawn_hold.bodymultiplier;
-        float bodyLength = hold_duration * travelSpeed * spawn_hold.bodymultiplier;
-
-        
         //tail
         GameObject spawnedTail = Instantiate(spawn_hold.Tail, holdNote.transform);
         spawnedTail.transform.localPosition = new Vector3(0, -bodyLength, 0);
         spawnedTail.transform.localRotation = Quaternion.identity;
         yield return new WaitForSeconds(hold_duration);
+
+        HoldnoteControls holdNoteControl = holdNote.AddComponent<HoldnoteControls>();
+        holdNoteControl.speed = travelSpeed;
 
         float elapsed = 0f;
         while (elapsed < hold_duration)
@@ -116,8 +117,6 @@ public class BeatManager : MonoBehaviour
             yield return null;
         }
         bodySpriteRenderer.size = new Vector2(bodySpriteRenderer.size.x, bodyLength);
-        HoldnoteControls holdNoteControl = holdNote.AddComponent<HoldnoteControls>();
-        holdNoteControl.speed = travelSpeed;
 
     }
     // Update is called once per frame
