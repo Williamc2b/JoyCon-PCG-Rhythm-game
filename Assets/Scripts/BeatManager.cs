@@ -23,11 +23,12 @@ public class BeatManager : MonoBehaviour
     private float currentTime;
     private Vector3 spawnoffset;
     private Quaternion rotation;
-    // Start is called once before the first execution of Update after the M
+
     void Start()
     {
         tempo=tempo/60f;
     }
+
     void Setspawnoffset(int laneIndex)
     {
         if(laneIndex == 0)
@@ -51,6 +52,7 @@ public class BeatManager : MonoBehaviour
             rotation=Quaternion.Euler(0, 0, 90);
         }
     }
+
     void spawnRandomNote()
     {
         int laneIndex = Random.Range(0, Lanes.Length);
@@ -67,59 +69,80 @@ public class BeatManager : MonoBehaviour
             noteControl.JudgementLine = lane;
         }
     }
+
     void SpawnHoldNote()
     {
-        //set which lane and colour of note to spawn
         int laneIndex = Random.Range(0, Lanes.Length);
         GameObject lane = Lanes[laneIndex];
         int holdIndex = Random.Range(0, hold_Notes.Length);
-        Hold_Note spawn_hold=hold_Notes[holdIndex];
-        float hold_duration = Random.Range(1f, 3f); // Random duration between 1 and 3 seconds
+        Hold_Note spawn_hold = hold_Notes[holdIndex];
+        float hold_duration = Random.Range(1f, 3f);
         Setspawnoffset(laneIndex);
 
-        StartCoroutine(SpawnHoldNoteCoroutine(lane, spawn_hold, hold_duration,laneIndex));
-    
+        StartCoroutine(SpawnHoldNoteCoroutine(lane, spawn_hold, hold_duration, laneIndex));
+    }
+    Vector3 setDirection(int laneIndex)
+    {
+        if(laneIndex == 0)
+        {
+            return Vector3.up;
+        }
+        else if(laneIndex == 1)
+        {
+            return Vector3.down;
+        }
+        else if(laneIndex == 2)
+        {
+            return Vector3.down;
+        }
+        else if(laneIndex == 3)
+        {
+            return Vector3.up;
+        }
+        return Vector3.zero;
     }
     IEnumerator SpawnHoldNoteCoroutine(GameObject lane, Hold_Note spawn_hold, float hold_duration, int laneIndex)
     {
         GameObject holdNote = new GameObject("HoldNote");
         holdNote.transform.position = lane.transform.position + spawnoffset;
         holdNote.transform.rotation = rotation;
+
         float travelSpeed = 11f / noteSpawnFrequency;
-        //float bodyLength = spawn_hold.hold_Duration * travelSpeed* spawn_hold.bodymultiplier;
         float bodyLength = hold_duration * travelSpeed * spawn_hold.bodymultiplier;
 
-        //head
-        GameObject head= Instantiate(spawn_hold.Head, holdNote.transform);
+        // Head
+        GameObject head = Instantiate(spawn_hold.Head, holdNote.transform);
         head.transform.localPosition = Vector3.zero;
-        
-        //body
+
+        // Body
         GameObject body = Instantiate(spawn_hold.Lane, holdNote.transform);
         body.transform.localPosition = Vector3.zero;
-        SpriteRenderer bodySpriteRenderer = body.GetComponent<SpriteRenderer>();
-        bodySpriteRenderer.drawMode = SpriteDrawMode.Tiled;
+        SpriteRenderer bodySR = body.GetComponent<SpriteRenderer>();
+        bodySR.drawMode = SpriteDrawMode.Tiled;
+        bodySR.size = new Vector2(bodySR.size.x, 0);
 
-        //tail
-        GameObject spawnedTail = Instantiate(spawn_hold.Tail, holdNote.transform);
-        spawnedTail.transform.localPosition = new Vector3(0, -bodyLength, 0);
-        spawnedTail.transform.localRotation = Quaternion.identity;
-        yield return new WaitForSeconds(hold_duration);
-
+        // Add movement immediately
         HoldnoteControls holdNoteControl = holdNote.AddComponent<HoldnoteControls>();
         holdNoteControl.speed = travelSpeed;
+        holdNoteControl.direction = setDirection(laneIndex);
 
+        // Grow body over hold_duration
         float elapsed = 0f;
         while (elapsed < hold_duration)
         {
             elapsed += Time.deltaTime;
-            float t = elapsed / hold_duration;
-            bodySpriteRenderer.size = new Vector2(bodySpriteRenderer.size.x, Mathf.Lerp(0, bodyLength, t));
+            float t = Mathf.Clamp01(elapsed / hold_duration);
+            bodySR.size = new Vector2(bodySR.size.x, Mathf.Lerp(0, bodyLength, t));
             yield return null;
         }
-        bodySpriteRenderer.size = new Vector2(bodySpriteRenderer.size.x, bodyLength);
 
+        bodySR.size = new Vector2(bodySR.size.x, bodyLength);
+
+        // Tail spawned only after body is fully grown
+        GameObject tail = Instantiate(spawn_hold.Tail, holdNote.transform);
+        tail.transform.localPosition = new Vector3(0,  -(bodyLength / 2f)-0.5f, 0);
     }
-    // Update is called once per frame
+
     void Update()
     {
         currentTime += Time.deltaTime;
