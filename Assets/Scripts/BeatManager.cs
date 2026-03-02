@@ -24,6 +24,7 @@ public class BeatManager : MonoBehaviour
     private Vector3 spawnoffset;
     private Quaternion rotation;
 
+
     void Start()
     {
         tempo=tempo/60f;
@@ -76,11 +77,15 @@ public class BeatManager : MonoBehaviour
         GameObject lane = Lanes[laneIndex];
         int holdIndex = Random.Range(0, hold_Notes.Length);
         Hold_Note spawn_hold = hold_Notes[holdIndex];
-        float hold_duration = Random.Range(1f, 3f);
         Setspawnoffset(laneIndex);
 
-        StartCoroutine(SpawnHoldNoteCoroutine(lane, spawn_hold, hold_duration, laneIndex));
+        float travelSpeed = 11f/noteSpawnFrequency;
+        float bodyLength = Random.Range(6f, 20f) * spawn_hold.bodymultiplier;
+        float hold_duration = bodyLength / travelSpeed;
+
+        StartCoroutine(SpawnHoldNoteCoroutine(lane, spawn_hold, hold_duration, bodyLength, laneIndex));
     }
+
     Vector3 setDirection(int laneIndex)
     {
         if(laneIndex == 0)
@@ -101,14 +106,14 @@ public class BeatManager : MonoBehaviour
         }
         return Vector3.zero;
     }
-    IEnumerator SpawnHoldNoteCoroutine(GameObject lane, Hold_Note spawn_hold, float hold_duration, int laneIndex)
+
+    IEnumerator SpawnHoldNoteCoroutine(GameObject lane, Hold_Note spawn_hold, float hold_duration, float bodyLength, int laneIndex)
     {
         GameObject holdNote = new GameObject("HoldNote");
         holdNote.transform.position = lane.transform.position + spawnoffset;
         holdNote.transform.rotation = rotation;
 
-        float travelSpeed = 11f / noteSpawnFrequency;
-        float bodyLength = hold_duration * travelSpeed * spawn_hold.bodymultiplier;
+        float travelSpeed = 11f/noteSpawnFrequency;
 
         // Head
         GameObject head = Instantiate(spawn_hold.Head, holdNote.transform);
@@ -121,12 +126,18 @@ public class BeatManager : MonoBehaviour
         bodySR.drawMode = SpriteDrawMode.Tiled;
         bodySR.size = new Vector2(bodySR.size.x, 0);
 
-        // Add movement immediately
         HoldnoteControls holdNoteControl = holdNote.AddComponent<HoldnoteControls>();
         holdNoteControl.speed = travelSpeed;
         holdNoteControl.direction = setDirection(laneIndex);
 
-        // Grow body over hold_duration
+        float tailoffset = -0.5f;
+        if (laneIndex == 1 || laneIndex == 2)
+        {
+            bodyLength = bodyLength * -1;
+            tailoffset = 0.5f;
+        }
+
+        // Grow body over hold_duration at same rate as travel speed
         float elapsed = 0f;
         while (elapsed < hold_duration)
         {
@@ -140,7 +151,7 @@ public class BeatManager : MonoBehaviour
 
         // Tail spawned only after body is fully grown
         GameObject tail = Instantiate(spawn_hold.Tail, holdNote.transform);
-        tail.transform.localPosition = new Vector3(0,  -(bodyLength / 2f)-0.5f, 0);
+        tail.transform.localPosition = new Vector3(0, -(bodyLength / 2f) + tailoffset, 0);
     }
 
     void Update()
