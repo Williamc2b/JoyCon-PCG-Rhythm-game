@@ -593,6 +593,10 @@ MonoBehaviour:
   hitLine: {fileID: 706345573}
   hitWindow: 0.2
   flickedThisFrame: 0
+  buttonAction: {fileID: 5673864452504724371, guid: bddbfc5d5639a8f40b90de148debd0e0, type: 3}
+  pressedThisFrame: 0
+  isHeld: 0
+  releasedThisFrame: 0
 --- !u!1 &1578944230
 GameObject:
   m_ObjectHideFlags: 0
@@ -641,6 +645,10 @@ MonoBehaviour:
   hitLine: {fileID: 1578944231}
   hitWindow: 0.2
   flickedThisFrame: 0
+  buttonAction: {fileID: 5010144243144140054, guid: bddbfc5d5639a8f40b90de148debd0e0, type: 3}
+  pressedThisFrame: 0
+  isHeld: 0
+  releasedThisFrame: 0
 --- !u!1 &1802617690
 GameObject:
   m_ObjectHideFlags: 0
@@ -689,6 +697,10 @@ MonoBehaviour:
   hitLine: {fileID: 1802617691}
   hitWindow: 0.2
   flickedThisFrame: 0
+  buttonAction: {fileID: -4839063700157969583, guid: bddbfc5d5639a8f40b90de148debd0e0, type: 3}
+  pressedThisFrame: 0
+  isHeld: 0
+  releasedThisFrame: 0
 --- !u!1 &1912606722
 GameObject:
   m_ObjectHideFlags: 0
@@ -737,6 +749,10 @@ MonoBehaviour:
   hitLine: {fileID: 1912606723}
   hitWindow: 0.2
   flickedThisFrame: 0
+  buttonAction: {fileID: 1840159509117504248, guid: bddbfc5d5639a8f40b90de148debd0e0, type: 3}
+  pressedThisFrame: 0
+  isHeld: 0
+  releasedThisFrame: 0
 --- !u!1 &2026047237
 GameObject:
   m_ObjectHideFlags: 0

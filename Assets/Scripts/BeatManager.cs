@@ -129,6 +129,9 @@ public class BeatManager : MonoBehaviour
         HoldnoteControls holdNoteControl = holdNote.AddComponent<HoldnoteControls>();
         holdNoteControl.speed = travelSpeed;
         holdNoteControl.direction = setDirection(laneIndex);
+        holdNoteControl.JudgementLine = lane;
+        holdNoteControl.head = head;
+        holdNoteControl.body = bodySR;
 
         float tailoffset = -0.5f;
         if (laneIndex == 1 || laneIndex == 2)
@@ -152,6 +155,7 @@ public class BeatManager : MonoBehaviour
         // Tail spawned only after body is fully grown
         GameObject tail = Instantiate(spawn_hold.Tail, holdNote.transform);
         tail.transform.localPosition = new Vector3(0, -(bodyLength / 2f) + tailoffset, 0);
+        holdNoteControl.tail = tail;
     }
 
     void Update()
