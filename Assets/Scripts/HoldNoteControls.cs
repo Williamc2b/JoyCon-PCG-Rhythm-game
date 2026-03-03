@@ -65,6 +65,7 @@ public class HoldnoteControls : MonoBehaviour
             {
                 Debug.Log("Hold note fully hit!");
                 Destroy(gameObject);
+                return;
             }
         }
     }
