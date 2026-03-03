@@ -400,7 +400,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 15
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -571,7 +571,7 @@ Transform:
   m_GameObject: {fileID: 706345572}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 10, z: 0}
+  m_LocalPosition: {x: 0, y: 15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -593,6 +593,10 @@ MonoBehaviour:
   hitLine: {fileID: 706345573}
   hitWindow: 0.2
   flickedThisFrame: 0
+  buttonAction: {fileID: 5673864452504724371, guid: bddbfc5d5639a8f40b90de148debd0e0, type: 3}
+  pressedThisFrame: 0
+  isHeld: 0
+  releasedThisFrame: 0
 --- !u!1 &1578944230
 GameObject:
   m_ObjectHideFlags: 0
@@ -619,7 +623,7 @@ Transform:
   m_GameObject: {fileID: 1578944230}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 0, z: 0}
+  m_LocalPosition: {x: 15, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -641,6 +645,10 @@ MonoBehaviour:
   hitLine: {fileID: 1578944231}
   hitWindow: 0.2
   flickedThisFrame: 0
+  buttonAction: {fileID: 5010144243144140054, guid: bddbfc5d5639a8f40b90de148debd0e0, type: 3}
+  pressedThisFrame: 0
+  isHeld: 0
+  releasedThisFrame: 0
 --- !u!1 &1802617690
 GameObject:
   m_ObjectHideFlags: 0
@@ -667,7 +675,7 @@ Transform:
   m_GameObject: {fileID: 1802617690}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -10, z: 0}
+  m_LocalPosition: {x: 0, y: -15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -689,6 +697,10 @@ MonoBehaviour:
   hitLine: {fileID: 1802617691}
   hitWindow: 0.2
   flickedThisFrame: 0
+  buttonAction: {fileID: -4839063700157969583, guid: bddbfc5d5639a8f40b90de148debd0e0, type: 3}
+  pressedThisFrame: 0
+  isHeld: 0
+  releasedThisFrame: 0
 --- !u!1 &1912606722
 GameObject:
   m_ObjectHideFlags: 0
@@ -715,7 +727,7 @@ Transform:
   m_GameObject: {fileID: 1912606722}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10, y: 0, z: 0}
+  m_LocalPosition: {x: -15, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -737,6 +749,10 @@ MonoBehaviour:
   hitLine: {fileID: 1912606723}
   hitWindow: 0.2
   flickedThisFrame: 0
+  buttonAction: {fileID: 1840159509117504248, guid: bddbfc5d5639a8f40b90de148debd0e0, type: 3}
+  pressedThisFrame: 0
+  isHeld: 0
+  releasedThisFrame: 0
 --- !u!1 &2026047237
 GameObject:
   m_ObjectHideFlags: 0
@@ -835,7 +851,7 @@ GameObject:
   - component: {fileID: 2063724057}
   - component: {fileID: 2063724056}
   m_Layer: 0
-  m_Name: Beatmanagert
+  m_Name: Beatmanager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -859,8 +875,31 @@ MonoBehaviour:
   - {fileID: 1802617690}
   - {fileID: 1912606722}
   notes:
-  - {fileID: 561896081607252974, guid: 7904ee8d3991ffb48a6317482f8d42f3, type: 3}
-  - {fileID: 1526390286081296520, guid: aade126e987479e4ba3671f6f521a640, type: 3}
+  - {fileID: 1272434504984329143, guid: 9d25715855990c3459b9f1c8354e9749, type: 3}
+  - {fileID: 3786959797063012049, guid: 4afe2c14af142eb4aaacb84a30a495ef, type: 3}
+  - {fileID: 7716954230716861863, guid: f011dac71763f994993b159bdf3bafb7, type: 3}
+  - {fileID: 1322778014895343171, guid: 9a7576b4bff9ae4419637ef1b4429fbc, type: 3}
+  hold_Notes:
+  - Head: {fileID: 3051889112124236956, guid: cbdfd04de72577646b484a019480866e, type: 3}
+    Lane: {fileID: 4712495601473894902, guid: 9e56debb1cf80e4409a4dca2dac3e3e4, type: 3}
+    Tail: {fileID: 8868730471455649522, guid: 1a13a0bbffb4ed047a65c9917a55ff0b, type: 3}
+    hold_Duration: 0
+    bodymultiplier: 1
+  - Head: {fileID: 7010474283720232350, guid: 63e95be546e97084a8288261956bfaab, type: 3}
+    Lane: {fileID: 270731046032525365, guid: b442c9ae077f7514fa5f618399b9cb79, type: 3}
+    Tail: {fileID: 2138421459487575847, guid: 87f6551cbd428e648991be3f2a9476fa, type: 3}
+    hold_Duration: 0
+    bodymultiplier: 1
+  - Head: {fileID: 3841110315178831057, guid: 2889e7fd026971a45998a01afd577974, type: 3}
+    Lane: {fileID: 4966495213300793683, guid: 927266773a413474e87f8b80eab3a2c7, type: 3}
+    Tail: {fileID: 1468011213426566144, guid: b011ee4ef8cbff04b82c5043f06410c1, type: 3}
+    hold_Duration: 0
+    bodymultiplier: 1
+  - Head: {fileID: 4238557058089126713, guid: 9a26addbcec3b5e4e8c09f41dcdda69d, type: 3}
+    Lane: {fileID: 7101114035823340897, guid: 9af22802b17701040bc08796a4e119eb, type: 3}
+    Tail: {fileID: 6828774540330126706, guid: 88e4c29503c4dea43974f748eca27833, type: 3}
+    hold_Duration: 0
+    bodymultiplier: 1
   noteSpawnFrequency: 2
   tempo: 120
 --- !u!4 &2063724057
