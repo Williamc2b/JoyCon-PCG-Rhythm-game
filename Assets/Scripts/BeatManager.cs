@@ -144,6 +144,7 @@ public class BeatManager : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < hold_duration)
         {
+            if (bodySR == null) yield break;
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / hold_duration);
             bodySR.size = new Vector2(bodySR.size.x, Mathf.Lerp(0, bodyLength, t));

@@ -4,8 +4,7 @@ using UnityEngine;
 public class HoldnoteControls : MonoBehaviour
 {
     public float speed;
-    public Vector3 direction = Vector3.down;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public Vector3 direction;
     public GameObject head;
     public GameObject tail;
     public SpriteRenderer body;
@@ -24,7 +23,6 @@ public class HoldnoteControls : MonoBehaviour
     {
         transform.Translate(direction * speed * Time.deltaTime);
         float distanceToLine = Vector3.Distance(transform.position, JudgementLine.transform.position);
-
         // hold when head it within offset
         if (!headHit && lane.pressedThisFrame && distanceToLine <= offset)
         {
@@ -72,7 +70,7 @@ public class HoldnoteControls : MonoBehaviour
 
     bool HasPassedLine()
     {
-        Vector3 toLine = JudgementLine.transform.position - transform.position;
-        return Vector3.Dot(toLine, direction) < 0;
+        Debug.Log("Distance to line: " + Vector3.Distance(transform.position, JudgementLine.transform.position));
+        return Vector3.Distance(transform.position, JudgementLine.transform.position)< 0.01f;
     }
 }
