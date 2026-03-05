@@ -70,7 +70,8 @@ public class HoldnoteControls : MonoBehaviour
 
     bool HasPassedLine()
     {
-        Debug.Log("Distance to line: " + Vector3.Distance(transform.position, JudgementLine.transform.position));
-        return Vector3.Distance(transform.position, JudgementLine.transform.position)< 0.01f;
+        Vector3 toLine = JudgementLine.transform.position - head.transform.position;
+        Debug.Log($"dot: {Vector3.Dot(toLine, direction)}");
+        return Vector3.Dot(toLine, direction) < -0.1f;
     }
 }
