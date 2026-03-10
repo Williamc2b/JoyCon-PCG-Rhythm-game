@@ -14,7 +14,6 @@ public class HoldnoteControls : MonoBehaviour
     private bool isheld = false;
     private bool tailPassed = false;
     private int tailPassedFrame = -1;
-    private bool tailAssignedLastFrame = false;
 
     void Start()
     {
@@ -27,9 +26,7 @@ public class HoldnoteControls : MonoBehaviour
         {
             transform.Translate(direction * speed * Time.deltaTime);
         }
-
         float distanceToLine = Vector3.Distance(transform.position, JudgementLine.transform.position);
-
         // Hit head within offset window
         if (!headHit && lane.pressedThisFrame && distanceToLine <= offset)
         {
@@ -38,7 +35,6 @@ public class HoldnoteControls : MonoBehaviour
             Destroy(head);
             Debug.Log("Hit head!");
         }
-
         // Head passed the line without being hit
         if (!headHit && HasPassedLine())
         {
@@ -46,8 +42,7 @@ public class HoldnoteControls : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        // Released too early (before tail reaches line)
+        // Released too early
         if (isheld && lane.releasedThisFrame && !tailPassed)
         {
             Debug.Log("Released too early!");
@@ -56,77 +51,31 @@ public class HoldnoteControls : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        // Wait for tail to be assigned by BeatManager coroutine
-        if (isheld && tail == null) return;
-
-        if (isheld && tail != null)
+        if(tail==null && headHit)
         {
-            // Skip the frame tail was just assigned to avoid same-frame false positives
-            if (!tailAssignedLastFrame)
-            {
-                tailAssignedLastFrame = true;
-                return;
-            }
+            return;
+        }
+        if (isheld&&headHit==true&&tailPassed==false)
+        {
 
             float tailDistance = Vector3.Distance(tail.transform.position, JudgementLine.transform.position);
-
-            // Transition to shrink phase
-            if (!tailPassed && TailHasPassedOrReachedLine())
-            {
-                if (!lane.isHeld)
-                {
-                    Debug.Log("Released too late!");
-                    if (tail != null) Destroy(tail);
-                    if (body != null) Destroy(body.gameObject);
-                    Destroy(gameObject);
-                    return;
-                }
-
-                tailPassed = true;
-                tailPassedFrame = Time.frameCount;
-                tail.transform.SetParent(null);
-                if (body != null) body.transform.SetParent(null);
-                Debug.Log("Tail reached line, switching to shrink mode.");
-            }
-
-            if (tailPassed)
-            {
-                // Fail if player is no longer holding during shrink phase
-                if (!lane.isHeld)
-                {
-                    Debug.Log("Released too late!");
-                    if (tail != null) Destroy(tail);
-                    if (body != null) Destroy(body.gameObject);
-                    Destroy(gameObject);
-                    return;
-                }
-
-                // Move tail toward judgement line
-                tail.transform.position += direction * speed * Time.deltaTime;
-
-                // Recalculate after moving tail
-                tailDistance = Vector3.Distance(tail.transform.position, JudgementLine.transform.position);
 
                 if (body != null)
                 {
                     // Mathf.Abs handles negative bodyLength from lanes 1 & 2
-                    body.size = new Vector2(body.size.x, Mathf.Abs(tailDistance));
+                    body.transform.Translate(direction * 0* Time.deltaTime);
+                    body.size = new Vector2(body.size.x,tailDistance);
 
-                    // Anchor body midpoint between judgement line and tail
-                    body.transform.position = JudgementLine.transform.position +
-                        (tail.transform.position - JudgementLine.transform.position) / 2f;
+                    // // Anchor body midpoint between judgement line and tail
+                    // body.transform.position = JudgementLine.transform.position +
+                    //     (tail.transform.position - JudgementLine.transform.position) / 2f;
                 }
 
                 if (tailDistance <= offset && Time.frameCount > tailPassedFrame)
                 {
-                    Debug.Log("Hold note fully hit!");
-                    if (tail != null) Destroy(tail);
-                    if (body != null) Destroy(body.gameObject);
-                    Destroy(gameObject);
-                    return;
+                    tailPassed = true;
+                    tailPassedFrame = Time.frameCount;
                 }
-            }
         }
     }
 
@@ -141,6 +90,6 @@ public class HoldnoteControls : MonoBehaviour
     {
         if (tail == null) return false;
         Vector3 toLine = JudgementLine.transform.position - tail.transform.position;
-        return Vector3.Dot(toLine, direction) < 0.5f;
+        return Vector3.Dot(toLine, direction) < -0.1f;
     }
 }
