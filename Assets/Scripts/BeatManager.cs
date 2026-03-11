@@ -80,7 +80,7 @@ public class BeatManager : MonoBehaviour
         Setspawnoffset(laneIndex);
 
         float travelSpeed = 11f/noteSpawnFrequency;
-        float bodyLength = Random.Range(6f, 20f) * spawn_hold.bodymultiplier;
+        float bodyLength = Random.Range(2f, 10f) * spawn_hold.bodymultiplier;
         float hold_duration = bodyLength / travelSpeed;
 
         StartCoroutine(SpawnHoldNoteCoroutine(lane, spawn_hold, hold_duration, bodyLength, laneIndex));
@@ -132,12 +132,11 @@ public class BeatManager : MonoBehaviour
         holdNoteControl.JudgementLine = lane;
         holdNoteControl.head = head;
         holdNoteControl.body = bodySR;
+        holdNoteControl.laneIndex = laneIndex;
 
-        float tailoffset = -0.5f;
         if (laneIndex == 1 || laneIndex == 2)
         {
             bodyLength = bodyLength * -1;
-            tailoffset = 0.5f;
         }
         if(laneIndex == 1 || laneIndex == 3)
         {
@@ -153,22 +152,22 @@ public class BeatManager : MonoBehaviour
             yield return null;
         }
 
-            bodySR.size = new Vector2(bodySR.size.x, bodyLength);
+        bodySR.size = new Vector2(bodySR.size.x, bodyLength);
 
-        // Tail spawned only after body is fully grown
-        GameObject tail = Instantiate(spawn_hold.Tail, holdNote.transform);
-        if (laneIndex == 1 || laneIndex == 3)
-        {
-            // Horizontal lanes - offset along x axis
-            tail.transform.localPosition = new Vector3((bodyLength / 2f) - tailoffset, 0, 0);
-        }
-        else
-        {
-            // Vertical lanes - offset along y axis
-            tail.transform.localPosition = new Vector3(0, -(bodyLength / 2f) + tailoffset, 0);
-        }
+        // // Tail spawned only after body is fully grown
+        // GameObject tail = Instantiate(spawn_hold.Tail, holdNote.transform);
+        // if (laneIndex == 1 || laneIndex == 3)
+        // {
+        //     // Horizontal lanes - offset along x axis
+        //     tail.transform.localPosition = new Vector3((bodyLength / 2f) - tailoffset, 0, 0);
+        // }
+        // else
+        // {
+        //     // Vertical lanes - offset along y axis
+        //     tail.transform.localPosition = new Vector3(0, -(bodyLength / 2f) + tailoffset, 0);
+        // }
 
-        holdNoteControl.tail = tail;
+        // holdNoteControl.tail = tail;
     }
 
     void Update()

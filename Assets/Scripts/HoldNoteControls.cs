@@ -9,11 +9,13 @@ public class HoldnoteControls : MonoBehaviour
     public SpriteRenderer body;
     public GameObject JudgementLine;
     public Lane lane;
+    public int laneIndex;
+    public bool stopGrowing = false;
     float offset = 0.6f;
     private bool headHit = false;
     private bool isheld = false;
-    private bool tailPassed = false;
-    private int tailPassedFrame = -1;
+    private bool shrinking = false;
+    private float bodySizeSign = 1f;
 
     void Start()
     {
@@ -22,11 +24,13 @@ public class HoldnoteControls : MonoBehaviour
 
     void Update()
     {
-        if (!tailPassed)
+        if (!shrinking)
         {
             transform.Translate(direction * speed * Time.deltaTime);
         }
+
         float distanceToLine = Vector3.Distance(transform.position, JudgementLine.transform.position);
+
         // Hit head within offset window
         if (!headHit && lane.pressedThisFrame && distanceToLine <= offset)
         {
@@ -35,6 +39,7 @@ public class HoldnoteControls : MonoBehaviour
             Destroy(head);
             Debug.Log("Hit head!");
         }
+
         // Head passed the line without being hit
         if (!headHit && HasPassedLine())
         {
@@ -42,40 +47,52 @@ public class HoldnoteControls : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        // Released too early
-        if (isheld && lane.releasedThisFrame && !tailPassed)
+
+        // Released too early (before shrinking starts)
+        if (isheld && lane.releasedThisFrame &&(body.size.y)>1f)
         {
             Debug.Log("Released too early!");
-            if (tail != null) Destroy(tail);
             if (body != null) Destroy(body.gameObject);
             Destroy(gameObject);
             return;
         }
-        if(tail==null && headHit)
+
+        // Switch to shrink mode once head reaches judgement line
+        if (isheld && !shrinking && headHit && distanceToLine <= offset)
         {
-            return;
+            shrinking = true;
+            stopGrowing = true;
+            bodySizeSign = Mathf.Sign(body.size.y) == 0 ? 1f : Mathf.Sign(body.size.y);
+            if (body != null)
+            {
+                body.transform.SetParent(null);
+                body.transform.position = JudgementLine.transform.position;
+            }
         }
-        if (isheld&&headHit==true&&tailPassed==false)
+
+        if (shrinking && body != null)
         {
+            float currentSize = Mathf.Abs(body.size.y);
+            float newSize = currentSize - Mathf.Abs(speed) * Time.deltaTime;
+            Debug.Log($"{currentSize}");
+            if (currentSize<offset && isheld==false)
+            {
+                Debug.Log("Hold note fully hit!");
+                Destroy(body.gameObject);
+                Destroy(gameObject);
+                return;
+            }
+            else if (currentSize==0&& isheld==true)
+            {
+                Debug.Log("Released too late");
+                Destroy(body.gameObject);
+                Destroy(gameObject);
+                return;
+            }
 
-            float tailDistance = Vector3.Distance(tail.transform.position, JudgementLine.transform.position);
-
-                if (body != null)
-                {
-                    // Mathf.Abs handles negative bodyLength from lanes 1 & 2
-                    body.transform.Translate(direction * 0* Time.deltaTime);
-                    body.size = new Vector2(body.size.x,tailDistance);
-
-                    // // Anchor body midpoint between judgement line and tail
-                    // body.transform.position = JudgementLine.transform.position +
-                    //     (tail.transform.position - JudgementLine.transform.position) / 2f;
-                }
-
-                if (tailDistance <= offset && Time.frameCount > tailPassedFrame)
-                {
-                    tailPassed = true;
-                    tailPassedFrame = Time.frameCount;
-                }
+            // Preserve sign so lanes 1 & 2 keep rendering correctly
+            body.size = new Vector2(body.size.x, bodySizeSign * newSize);
+            body.transform.position = JudgementLine.transform.position;
         }
     }
 
@@ -83,13 +100,6 @@ public class HoldnoteControls : MonoBehaviour
     {
         if (head == null) return false;
         Vector3 toLine = JudgementLine.transform.position - head.transform.position;
-        return Vector3.Dot(toLine, direction) < -0.1f;
-    }
-
-    bool TailHasPassedOrReachedLine()
-    {
-        if (tail == null) return false;
-        Vector3 toLine = JudgementLine.transform.position - tail.transform.position;
         return Vector3.Dot(toLine, direction) < -0.1f;
     }
 }
