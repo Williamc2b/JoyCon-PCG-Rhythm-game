@@ -58,8 +58,7 @@ public class BeatManager : MonoBehaviour
     {
         int laneIndex = Random.Range(0, Lanes.Length);
         GameObject lane = Lanes[laneIndex];
-        int noteIndex = Random.Range(0, notes.Length);
-        GameObject note = notes[noteIndex];
+        GameObject note = notes[laneIndex];
         Setspawnoffset(laneIndex);
         GameObject spawnedNote = Instantiate(note, lane.transform.position + spawnoffset, rotation);
 
@@ -75,8 +74,7 @@ public class BeatManager : MonoBehaviour
     {
         int laneIndex = Random.Range(0, Lanes.Length);
         GameObject lane = Lanes[laneIndex];
-        int holdIndex = Random.Range(0, hold_Notes.Length);
-        Hold_Note spawn_hold = hold_Notes[holdIndex];
+        Hold_Note spawn_hold = hold_Notes[laneIndex];
         Setspawnoffset(laneIndex);
 
         float travelSpeed = 11f/noteSpawnFrequency;

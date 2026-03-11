@@ -28,19 +28,25 @@ public class ImportMusicManager : MonoBehaviour
 
     void StoreSong(string sourcePath)
     {
+        //make folder for song
         string songsRoot = Path.Combine(Application.persistentDataPath, "Songs");
         Directory.CreateDirectory(songsRoot);
-        Debug.Log(songsRoot);
 
+        //create file path for song and add song to folder
         string fileName = Path.GetFileNameWithoutExtension(sourcePath);
         string songFolder = Path.Combine(songsRoot, fileName);
         Directory.CreateDirectory(songFolder);
 
+        //copy audio file to song folder
         string ext = Path.GetExtension(sourcePath);
-        string destPath = Path.Combine(songFolder, "audio" + ext);
+        string destPath = Path.Combine(songFolder, fileName + ext);
 
         if (!File.Exists(destPath))
             File.Copy(sourcePath, destPath);
+            //TODO: Retrieve audio file and ran through an audio analyzer to get BPM and other info, then save that info to a file in the song folder
+            AudioConverter converter = gameObject.AddComponent<AudioConverter>();
+            converter.audioSource = musicFile;
+            converter.ConvertAudio();
 
         StartCoroutine(LoadAudio(destPath));
     }
