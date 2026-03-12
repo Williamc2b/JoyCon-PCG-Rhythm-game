@@ -8,7 +8,7 @@ using SFB;
 public class ImportMusicManager : MonoBehaviour
 {
     public AudioSource musicFile;
-
+    public AudioConverter audioConverter;
     void Start()
     {
         GetComponent<Button>().onClick.AddListener(ImportSong);
@@ -43,10 +43,6 @@ public class ImportMusicManager : MonoBehaviour
 
         if (!File.Exists(destPath))
             File.Copy(sourcePath, destPath);
-            //TODO: Retrieve audio file and ran through an audio analyzer to get BPM and other info, then save that info to a file in the song folder
-            AudioConverter converter = gameObject.AddComponent<AudioConverter>();
-            converter.audioSource = musicFile;
-            converter.ConvertAudio();
 
         StartCoroutine(LoadAudio(destPath));
     }
@@ -68,7 +64,10 @@ public class ImportMusicManager : MonoBehaviour
 
         AudioClip clip = DownloadHandlerAudioClip.GetContent(req);
         musicFile.clip = clip;
+        clip.name = Path.GetFileNameWithoutExtension(path); // add this line
         musicFile.Play();
+        audioConverter.audioSource = musicFile;
+        audioConverter.ConvertAudio();
     }
 
     AudioType GetAudioType(string path)
