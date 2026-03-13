@@ -41,12 +41,12 @@ public class AudioConverter : MonoBehaviour
 
         }
     }
-    float FFT(AudioClip audio)
+    float FFT(AudioClip audio)//performs FFT on audio clip
     {
         //audio data
         int windowSize = 1024;
         int sampleRate = audio.frequency;
-        int channels = audio.channels;
+        int channels = audio.channels;//L and R channels
         float[] samples = new float[audio.samples * channels];
         audio.GetData(samples, 0);//get audio data into samples array
 
@@ -61,7 +61,7 @@ public class AudioConverter : MonoBehaviour
             }
             monoSamples[i] = sum / channels;
         }
-        //Implement han window to reduce spectral leakage
+        //Implement hann window to reduce spectral leakage and smooth out the signal window
         int windowslide= (int)(windowSize / 2);
         for (int i = 0; i+windowSize < monoSamples.Length; i += windowslide)
         {
@@ -69,8 +69,8 @@ public class AudioConverter : MonoBehaviour
             Complex[] complexSamples = new Complex[(int)windowSize];
             for (int j = 0; j < windowSize; j++)
             {
-                float windowValue = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * j / (windowSize - 1)));//Hanning window
-                complexSamples[j] = new Complex(monoSamples[j] * windowValue, 0);
+                float windowValue = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * j / (windowSize - 1)));//Hann window
+                complexSamples[j] = new Complex(monoSamples[j] * windowValue, 0);//apply window to samples
             }
 
             FourierTransform.FFT(complexSamples, FourierTransform.Direction.Forward);
