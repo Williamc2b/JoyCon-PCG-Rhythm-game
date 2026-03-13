@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using AForge;
-using AForge.Math;
+using AForge.Math;//Aforge plugin for FFT and complex numbers
 
 
 public class Beatmap
@@ -11,11 +11,10 @@ public class Beatmap
     public float mapDuration;
 
 }
+
 public class AudioConverter : MonoBehaviour
 {
     public AudioSource audioSource;
-    
-    //beat detection algorithm adapted from https://www.youtube.com/watch?v=VbXkYHjK8sE&t=1s
     public void getBPM()
     {
         
@@ -34,9 +33,8 @@ public class AudioConverter : MonoBehaviour
 
         IEnumerator ConvertAudioCoroutine(AudioClip audio)
         {
-            // Simulate a time-consuming conversion process
             float bpm=FFT(audio);
-            yield return new WaitForSeconds(2f); // Simulate conversion time
+            yield return new WaitForSeconds(2f);
             Debug.Log("Audio conversion completed for: " + audio.name);
 
         }
@@ -61,6 +59,7 @@ public class AudioConverter : MonoBehaviour
             }
             monoSamples[i] = sum / channels;
         }
+
         //Implement hann window to reduce spectral leakage and smooth out the signal window
         int windowslide= (int)(windowSize / 2);
         for (int i = 0; i+windowSize < monoSamples.Length; i += windowslide)
@@ -77,6 +76,9 @@ public class AudioConverter : MonoBehaviour
         }
 
 
-        return 120f; // Example BPM
+
+
+
+        return 1f; // placeholder
     }
 }

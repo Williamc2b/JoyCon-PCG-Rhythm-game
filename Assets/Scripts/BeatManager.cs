@@ -130,7 +130,6 @@ public class BeatManager : MonoBehaviour
         holdNoteControl.JudgementLine = lane;
         holdNoteControl.head = head;
         holdNoteControl.body = bodySR;
-        holdNoteControl.laneIndex = laneIndex;
 
         if (laneIndex == 1 || laneIndex == 2)
         {
