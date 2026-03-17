@@ -1,23 +1,25 @@
 using System.Collections;
 using UnityEngine;
 using AForge;
-using AForge.Math;//Plus library for complex numbers and FFT
+using AForge.Math;
+using System.Collections.Generic;//Plus library for complex numbers and FFT
 
+public class NoteEvent
+{
+    public float timestamp;
+}
 public class Beatmap
 {
     public float bpm;
     public string mapName;
     public float mapDuration;
+    public List<NoteEvent> beatEvents= new List<NoteEvent>();
 
 }
 
 public class AudioConverter : MonoBehaviour
 {
     public AudioSource audioSource;
-    public void getBPM()
-    {
-        
-    }
     public void ConvertAudio()
     {  
         AudioClip audio = audioSource.clip;
@@ -109,17 +111,46 @@ public class AudioConverter : MonoBehaviour
         }
         return flux; // return the normalized flux values
     }
+
     float GetBPM(float[] flux, int sampleRate, int windowSize, int windowslide)
     {
-
-        return 120f; // Example BPM value
+        float FPS = (float)sampleRate / windowslide;
+        // Estimate BPM by finding the lag with the highest autocorrelation in the spectral flux
+        int minLag= Mathf.RoundToInt(FPS * 60f / 200f);
+        int maxLag= Mathf.Min(Mathf.RoundToInt(FPS * 60f / 60f),flux.Length - 1);
+        float bestScore = float.MinValue;
+        int   bestLag   = minLag;
+        // Autocorrelation to find periodicity in the flux
+        for (int lag = minLag; lag <= maxLag; lag++)
+        {
+            float score = 0f;
+            int n= flux.Length - lag;
+            for (int j = 0; j < n; j++)
+            {
+                score += flux[j] * flux[j + lag];
+            }
+            score /= n;
+            if (score > bestScore) 
+            { 
+                bestScore = score; 
+                bestLag = lag; 
+            }
+        }
+        return 60f / (bestLag / FPS);
     }
+
     Beatmap GenerateBeatmap(float bpm, string mapName, float mapDuration,float[] flux)
     {
         Beatmap beatmap = new Beatmap();
-        beatmap.bpm = bpm;
         beatmap.mapName = mapName;
+        beatmap.bpm = bpm;
         beatmap.mapDuration = mapDuration;
+        List<NoteEvent> noteSpawnEvents = new List<NoteEvent>();
+
+        //TODO: Use the spectral flux to determine where to place note events in the beatmap. This is a complex task that may involve setting a threshold for flux peaks and spacing out note events based on the BPM and timing of the music. For now, we will just create some placeholder note events at regular intervals based on the BPM.
+
+
+
         return beatmap;
     }
 
