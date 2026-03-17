@@ -1,9 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using AForge;
-using AForge.Math;
-using Unity.Burst.Intrinsics;//Aforge plugin for FFT and complex numbers
-
+using AForge.Math;//Plus library for complex numbers and FFT
 
 public class Beatmap
 {
@@ -31,12 +29,14 @@ public class AudioConverter : MonoBehaviour
         Debug.Log("Converting audio clip: " + audio.name);
 
         StartCoroutine(ConvertAudioCoroutine(audio));
-
+        
         IEnumerator ConvertAudioCoroutine(AudioClip audio)
         {
             float[] flux=FFT(audio);//perform FFT and get spectral flux
-            //float bpm=FFT(audio);
-            yield return new WaitForSeconds(2f);
+            float bpm=GetBPM(flux, audio.frequency, 1024, 512);//get BPM from spectral flux
+            Debug.Log("Estimated BPM: " + bpm);
+            Beatmap beatmap=GenerateBeatmap(bpm, audio.name, audio.length, flux);//generate beatmap from BPM and other info
+            yield return beatmap;
             Debug.Log("Audio conversion completed for: " + audio.name);
 
         }
@@ -109,4 +109,18 @@ public class AudioConverter : MonoBehaviour
         }
         return flux; // return the normalized flux values
     }
+    float GetBPM(float[] flux, int sampleRate, int windowSize, int windowslide)
+    {
+
+        return 120f; // Example BPM value
+    }
+    Beatmap GenerateBeatmap(float bpm, string mapName, float mapDuration,float[] flux)
+    {
+        Beatmap beatmap = new Beatmap();
+        beatmap.bpm = bpm;
+        beatmap.mapName = mapName;
+        beatmap.mapDuration = mapDuration;
+        return beatmap;
+    }
+
 }
