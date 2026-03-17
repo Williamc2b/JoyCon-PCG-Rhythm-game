@@ -1,7 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using AForge;
-using AForge.Math;//Aforge plugin for FFT and complex numbers
+using AForge.Math;
+using Unity.Burst.Intrinsics;//Aforge plugin for FFT and complex numbers
 
 
 public class Beatmap
@@ -33,13 +34,14 @@ public class AudioConverter : MonoBehaviour
 
         IEnumerator ConvertAudioCoroutine(AudioClip audio)
         {
-            float bpm=FFT(audio);
+            float[] flux=FFT(audio);//perform FFT and get spectral flux
+            //float bpm=FFT(audio);
             yield return new WaitForSeconds(2f);
             Debug.Log("Audio conversion completed for: " + audio.name);
 
         }
     }
-    float FFT(AudioClip audio)//performs FFT on audio clip
+    float[] FFT(AudioClip audio)//performs FFT on audio clip
     {
         //audio data
         int windowSize = 1024;
@@ -61,24 +63,50 @@ public class AudioConverter : MonoBehaviour
         }
 
         //Implement hann window to reduce spectral leakage and smooth out the signal window
-        int windowslide= (int)(windowSize / 2);
+        int windowslide= windowSize / 2;
+        float[] flux = new float[monoSamples.Length-windowSize/windowslide];
+        float[] prevMagnitude = new float[windowslide];
         for (int i = 0; i+windowSize < monoSamples.Length; i += windowslide)
         {
             //Hanning window formula: w(n) = 0.5 * (1 - cos(2 * pi * n / (N - 1)))
-            Complex[] complexSamples = new Complex[(int)windowSize];
+            Complex[] complexSamples = new Complex[windowSize];
             for (int j = 0; j < windowSize; j++)
             {
                 float windowValue = 0.5f * (1 - Mathf.Cos(2 * Mathf.PI * j / (windowSize - 1)));//Hann window
-                complexSamples[j] = new Complex(monoSamples[j] * windowValue, 0);//apply window to samples
+                complexSamples[j] = new Complex(monoSamples[i+j] * windowValue, 0);//apply window to samples
             }
 
             FourierTransform.FFT(complexSamples, FourierTransform.Direction.Forward);
+            int   frameIndex = i / windowslide;
+            float frameFlux  = 0f;
+            for (int k = 0; k < windowslide; k++)
+            {
+                float magnitude=Mathf.Sqrt((float)(complexSamples[k].Re * complexSamples[k].Re + complexSamples[k].Im * complexSamples[k].Im));
+
+                float changeinMag = magnitude-prevMagnitude[k];
+                if(changeinMag > 0f)
+                {
+                    frameFlux += changeinMag;
+                }
+                prevMagnitude[k] = magnitude;
+            }
+            flux[frameIndex] = frameFlux;
         }
-
-
-
-
-
-        return 1f; // placeholder
+        float maxflux=0f;
+        foreach(float f in flux)
+        {
+            if(f>maxflux)
+            {
+                maxflux=f;
+            }
+        }
+        if(maxflux>0f)
+        {
+            for(int i=0;i<flux.Length;i++)
+            {
+                flux[i] /= maxflux;
+            }
+        }
+        return flux; // return the normalized flux values
     }
 }
