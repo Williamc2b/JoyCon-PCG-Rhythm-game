@@ -19,7 +19,7 @@ public class ImportMusicManager : MonoBehaviour
         var paths = StandaloneFileBrowser.OpenFilePanel(
             "Import Music",
             "",
-            new[] { new ExtensionFilter("Audio Files", "mp3", "wav") },
+            new[] { new ExtensionFilter("Audio Files", "mp3", "wav","ogg") },
             false
         );
         if (paths.Length > 0)
@@ -64,7 +64,7 @@ public class ImportMusicManager : MonoBehaviour
 
         AudioClip clip = DownloadHandlerAudioClip.GetContent(req);
         musicFile.clip = clip;
-        clip.name = Path.GetFileNameWithoutExtension(path); // add this line
+        clip.name = Path.GetFileNameWithoutExtension(path);
         musicFile.Play();
         audioConverter.audioSource = musicFile;
         audioConverter.ConvertAudio();

@@ -35,10 +35,13 @@ public class AudioConverter : MonoBehaviour
         IEnumerator ConvertAudioCoroutine(AudioClip audio)
         {
             float[] flux=FFT(audio);//perform FFT and get spectral flux
-            float bpm=GetBPM(flux, audio.frequency, 1024, 512);//get BPM from spectral flux
+            Debug.Log("Spectral flux calculated for: " + audio.name);
+            Debug.Log("Flux length: " + flux.Length);
+            float bpm=GetBPM(flux, audio.frequency, 512);//get BPM from spectral flux
             Debug.Log("Estimated BPM: " + bpm);
-            Beatmap beatmap=GenerateBeatmap(bpm, audio.name, audio.length, flux);//generate beatmap from BPM and other info
-            yield return beatmap;
+            //Beatmap beatmap=GenerateBeatmap(bpm, audio.name, audio.length, flux);//generate beatmap from BPM and other info
+            //yield return beatmap;
+            yield return null; // Placeholder for beatmap generation
             Debug.Log("Audio conversion completed for: " + audio.name);
 
         }
@@ -109,14 +112,14 @@ public class AudioConverter : MonoBehaviour
                 flux[i] /= maxflux;
             }
         }
-        return flux; // return the normalized flux values
+        return flux; 
     }
 
-    float GetBPM(float[] flux, int sampleRate, int windowSize, int windowslide)
+    float GetBPM(float[] flux, int sampleRate,int windowslide)
     {
         float FPS = (float)sampleRate / windowslide;
         // Estimate BPM by finding the lag with the highest autocorrelation in the spectral flux
-        int minLag= Mathf.RoundToInt(FPS * 60f / 200f);
+        int minLag= Mathf.RoundToInt(FPS * 60f / 250f);
         int maxLag= Mathf.Min(Mathf.RoundToInt(FPS * 60f / 60f),flux.Length - 1);
         float bestScore = float.MinValue;
         int   bestLag   = minLag;
@@ -136,7 +139,43 @@ public class AudioConverter : MonoBehaviour
                 bestLag = lag; 
             }
         }
-        return 60f / (bestLag / FPS);
+        float rawBpm = 60f / (bestLag / FPS);
+        float bpm = CorrectTempo(rawBpm, flux, FPS, bestScore);
+        bpm=Mathf.Round(bpm / 5f) * 5f;
+        return bpm;
+    }
+    float CorrectTempo(float bpm, float[] flux, float FPS, float bestScore)
+    {
+        float maxBpm    = 250f;
+        float threshold = 0.85f;
+        float doubleBpm = bpm * 2f;
+        while (doubleBpm <= maxBpm)
+        {
+            int halfLag = Mathf.RoundToInt(60f / doubleBpm * FPS);
+            if (halfLag < 1 || halfLag >= flux.Length) break;
+
+            // Score the half-lag
+            float halfScore = 0f;
+            int   n         = flux.Length - halfLag;
+            for (int j = 0; j < n; j++)
+                halfScore += flux[j] * flux[j + halfLag];
+            halfScore /= n;
+
+            // Only double if the half-lag scores VERY close to the original
+            // A genuine slow song will score much worse at double tempo
+            // A misdetected fast song will score almost identically at double tempo
+            if (halfScore >= bestScore * threshold)
+            {
+                bpm       = doubleBpm;
+                doubleBpm = bpm * 2f;
+                bestScore = halfScore;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return bpm;
     }
 
     Beatmap GenerateBeatmap(float bpm, string mapName, float mapDuration,float[] flux)
