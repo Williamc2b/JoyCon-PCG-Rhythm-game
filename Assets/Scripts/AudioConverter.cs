@@ -156,9 +156,11 @@ public class AudioConverter : MonoBehaviour
 
             // Score the half-lag
             float halfScore = 0f;
-            int   n         = flux.Length - halfLag;
+            int n = flux.Length - halfLag;
             for (int j = 0; j < n; j++)
+            {
                 halfScore += flux[j] * flux[j + halfLag];
+            }
             halfScore /= n;
 
             // Only double if the half-lag scores VERY close to the original
@@ -166,7 +168,7 @@ public class AudioConverter : MonoBehaviour
             // A misdetected fast song will score almost identically at double tempo
             if (halfScore >= bestScore * threshold)
             {
-                bpm       = doubleBpm;
+                bpm = doubleBpm;
                 doubleBpm = bpm * 2f;
                 bestScore = halfScore;
             }
