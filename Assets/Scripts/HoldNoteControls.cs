@@ -10,23 +10,24 @@ public class HoldnoteControls : MonoBehaviour
     public GameObject JudgementLine;
     public Lane lane;
     public int laneIndex;
-
+    public float holdnoteDuration;
     float offset = 0.6f;
+    public float releaseToleranceWindow = 0.15f;
 
     private bool headHit = false;
     private bool isHeld = false;
     private bool shrinking = false;
+    private bool releasedEarly = false;
+    private bool noteCompleted = false;
+    private bool tooLong = false;
+    private float holdTimer = 0f;
+    private float releaseHeldTimer = 0f;
+    private float originalBodySize = 0f;
     private float bodySizeSign = 1f;
 
     void Start()
     {
         lane = JudgementLine.GetComponent<Lane>();
-
-        if (body != null)
-        {
-            bodySizeSign = Mathf.Sign(body.size.y);
-            if (bodySizeSign == 0) bodySizeSign = 1f;
-        }
     }
 
     void Update()
@@ -44,13 +45,15 @@ public class HoldnoteControls : MonoBehaviour
             headHit = true;
             isHeld = true;
             shrinking = true;
-
             Destroy(head);
 
             if (body != null)
             {
                 body.transform.SetParent(null);
                 body.transform.position = JudgementLine.transform.position;
+                bodySizeSign = Mathf.Sign(body.size.y); // *** ADD ***
+                if (bodySizeSign == 0f) bodySizeSign = 1f;
+                originalBodySize = Mathf.Abs(body.size.y);
             }
 
             Debug.Log("Hit head!");
@@ -69,7 +72,24 @@ public class HoldnoteControls : MonoBehaviour
             isHeld = lane.isHeld;
         }
 
-        if (shrinking && !isHeld)
+        // Tolerance window for early release
+        if (shrinking && !noteCompleted && !isHeld && !releasedEarly)
+        {
+            releaseHeldTimer += Time.deltaTime;
+
+            if (releaseHeldTimer >= releaseToleranceWindow)
+            {
+                releasedEarly = true;
+            }
+        }
+
+        // Reset tolerance timer if player re-presses within window
+        if (shrinking && isHeld)
+        {
+            releaseHeldTimer = 0f;
+        }
+
+        if (releasedEarly)
         {
             Debug.Log("Released too early!");
             if (body != null) Destroy(body.gameObject);
@@ -77,23 +97,43 @@ public class HoldnoteControls : MonoBehaviour
             return;
         }
 
-        // Shrink hold body
-        if (shrinking && body != null)
+        // Count hold duration and shrink body
+        if (shrinking && !noteCompleted)
         {
-            float currentSize = Mathf.Abs(body.size.y);
-            float newSize = currentSize - Mathf.Abs(speed) * Time.deltaTime;
+            holdTimer += Time.deltaTime;
 
-            newSize = Mathf.Max(0, newSize);
+            if (body != null)
+            {
+                float t = Mathf.Clamp01(holdTimer / holdnoteDuration);
+                float newSize = Mathf.Lerp(originalBodySize, 0, t);
+                body.size = new Vector2(body.size.x, bodySizeSign * newSize); // *** CHANGE ***
+                body.transform.position = JudgementLine.transform.position;
+            }
 
-            body.size = new Vector2(body.size.x, bodySizeSign * newSize);
-            body.transform.position = JudgementLine.transform.position;
-
-            if (newSize <= 0.05f)
+            if (holdTimer >= holdnoteDuration)
+            {
+                noteCompleted = true;
+                if (body != null) Destroy(body.gameObject);
+            }
+        }
+        if (tooLong)
+        {
+            Debug.Log("Hold note failed due to holding too long!");
+            Destroy(gameObject);
+            return;
+        }
+        // Wait for release after note completes
+        if (noteCompleted)
+        {
+            if (!isHeld)
             {
                 Debug.Log("Hold note fully hit!");
-                Destroy(body.gameObject);
                 Destroy(gameObject);
                 return;
+            }
+            else
+            {
+                tooLong = true;
             }
         }
     }
@@ -101,7 +141,6 @@ public class HoldnoteControls : MonoBehaviour
     bool HasPassedLine()
     {
         if (head == null) return false;
-
         Vector3 toLine = JudgementLine.transform.position - head.transform.position;
         return Vector3.Dot(toLine, direction) < -0.1f;
     }

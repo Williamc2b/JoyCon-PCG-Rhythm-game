@@ -72,7 +72,8 @@ public class BeatManager : MonoBehaviour
 
     void SpawnHoldNote()
     {
-        int laneIndex = Random.Range(0, Lanes.Length);
+        int laneIndex = Random.Range(0, Lanes.Length);//random change for real implementation
+
         GameObject lane = Lanes[laneIndex];
         Hold_Note spawn_hold = hold_Notes[laneIndex];
         Setspawnoffset(laneIndex);
@@ -130,6 +131,7 @@ public class BeatManager : MonoBehaviour
         holdNoteControl.JudgementLine = lane;
         holdNoteControl.head = head;
         holdNoteControl.body = bodySR;
+        holdNoteControl.holdnoteDuration = hold_duration;
 
         if (laneIndex == 1 || laneIndex == 2)
         {
