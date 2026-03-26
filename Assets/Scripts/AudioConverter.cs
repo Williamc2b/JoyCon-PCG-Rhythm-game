@@ -13,7 +13,7 @@ public class Beatmap
     public float bpm;
     public string mapName;
     public float mapDuration;
-    public List<NoteEvent> beatEvents= new List<NoteEvent>();
+    public List<NoteEvent> beatEvents= new List<NoteEvent>();//List of note events with timestamps
 
 }
 
@@ -39,9 +39,11 @@ public class AudioConverter : MonoBehaviour
             Debug.Log("Flux length: " + flux.Length);
             float bpm=GetBPM(flux, audio.frequency, 512);//get BPM from spectral flux
             Debug.Log("Estimated BPM: " + bpm);
+
             //Beatmap beatmap=GenerateBeatmap(bpm, audio.name, audio.length, flux);//generate beatmap from BPM and other info
             //yield return beatmap;
             yield return null; // Placeholder for beatmap generation
+
             Debug.Log("Audio conversion completed for: " + audio.name);
 
         }
@@ -74,6 +76,7 @@ public class AudioConverter : MonoBehaviour
         for (int i = 0; i+windowSize < monoSamples.Length; i += windowslide)
         {
             //Hanning window formula: w(n) = 0.5 * (1 - cos(2 * pi * n / (N - 1)))
+            //source: https://en.wikipedia.org/wiki/Window_function#Hann_and_Hamming_windows
             Complex[] complexSamples = new Complex[windowSize];
             for (int j = 0; j < windowSize; j++)
             {
