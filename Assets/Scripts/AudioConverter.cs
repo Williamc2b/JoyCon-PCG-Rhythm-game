@@ -52,8 +52,9 @@ public class AudioConverter : MonoBehaviour
             float bpm=GetBPM(flux, audio.frequency, 512);//get BPM from spectral flux
             Debug.Log("Estimated BPM: " + bpm);
             SetProgress(0.8f, "Generating beatmap for: " + audio.name);
-            //Beatmap beatmap=GenerateBeatmap(bpm, audio.name, audio.length, flux);//generate beatmap from BPM and other info
-            //yield return beatmap;
+            Beatmap beatmap=GenerateBeatmap(audio, bpm, audio.name, audio.length, flux);//generate beatmap from BPM and other info
+            string json = JsonUtility.ToJson(beatmap);
+            
             yield return null; // Placeholder for beatmap generation
             SetProgress(1f, "Conversion completed for: " + audio.name);
             Debug.Log("Audio conversion completed for: " + audio.name);
@@ -71,7 +72,6 @@ public class AudioConverter : MonoBehaviour
         SetProgress(0.3f, "Performing FFT on: " + audio.name);
         //audio data
         int windowSize = 1024;
-        int sampleRate = audio.frequency;
         int channels = audio.channels;//L and R channels
         float[] samples = new float[audio.samples * channels];
         audio.GetData(samples, 0);//get audio data into samples array
@@ -205,19 +205,20 @@ public class AudioConverter : MonoBehaviour
         return bpm;
     }
 
-    Beatmap GenerateBeatmap(float bpm, string mapName, float mapDuration,float[] flux)
+    Beatmap GenerateBeatmap(AudioClip audio, float bpm, string mapName, float mapDuration, float[] flux)
     {
-        Beatmap beatmap = new Beatmap();
-        beatmap.mapName = mapName;
-        beatmap.bpm = bpm;
-        beatmap.mapDuration = mapDuration;
-        List<NoteEvent> noteSpawnEvents = new List<NoteEvent>();
+        Beatmap Newbeatmap = new Beatmap();
+        Newbeatmap.mapName = mapName;
+        Newbeatmap.bpm = bpm;
+        Newbeatmap.mapDuration = mapDuration;
 
-        //TODO: Use the spectral flux to determine where to place note events in the beatmap. This is a complex task that may involve setting a threshold for flux peaks and spacing out note events based on the BPM and timing of the music. For now, we will just create some placeholder note events at regular intervals based on the BPM.
+        float sampleRate = audio.frequency; // Assuming standard audio sample rate
+        float windowSlide = 512; //
 
 
+        float FPS = (float)sampleRate / windowSlide; // frames per second
+        float secondsPerBeat = 60f / bpm;
+        float framesPerBeat = FPS * secondsPerBeat;
 
-        return beatmap;
     }
-
 }
