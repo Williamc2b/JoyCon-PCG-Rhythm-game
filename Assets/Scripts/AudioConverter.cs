@@ -2,7 +2,10 @@ using System.Collections;
 using UnityEngine;
 using AForge;
 using AForge.Math;
-using System.Collections.Generic;//Plus library for complex numbers and FFT
+using System.Collections.Generic;
+using UnityEngine.UI;
+using TMPro;//Plus library for complex numbers and FFT
+
 
 public class NoteEvent
 {
@@ -20,6 +23,10 @@ public class Beatmap
 public class AudioConverter : MonoBehaviour
 {
     public AudioSource audioSource;
+
+    public GameObject LoadingScreen;
+    public Slider ProgressBar;
+    public TextMeshProUGUI ProgressText;
     public void ConvertAudio()
     {  
         AudioClip audio = audioSource.clip;
@@ -28,28 +35,40 @@ public class AudioConverter : MonoBehaviour
             Debug.LogError("No audio clip assigned to the AudioSource.");
             return;
         }
-        Debug.Log("Converting audio clip: " + audio.name);
 
         StartCoroutine(ConvertAudioCoroutine(audio));
         
         IEnumerator ConvertAudioCoroutine(AudioClip audio)
         {
-            float[] flux=FFT(audio);//perform FFT and get spectral flux
+            LoadingScreen.SetActive(true);
+            SetProgress(0f, "Starting conversion for: " + audio.name);
+            float[] flux=null;//perform FFT and get spectral flux
+            yield return StartCoroutine(FFT(audio, result => flux = result));
             Debug.Log("Spectral flux calculated for: " + audio.name);
             Debug.Log("Flux length: " + flux.Length);
+
+            SetProgress(0.6f, "Estimating BPM for: " + audio.name);
+            yield return null; // 
             float bpm=GetBPM(flux, audio.frequency, 512);//get BPM from spectral flux
             Debug.Log("Estimated BPM: " + bpm);
-
+            SetProgress(0.8f, "Generating beatmap for: " + audio.name);
             //Beatmap beatmap=GenerateBeatmap(bpm, audio.name, audio.length, flux);//generate beatmap from BPM and other info
             //yield return beatmap;
             yield return null; // Placeholder for beatmap generation
-
+            SetProgress(1f, "Conversion completed for: " + audio.name);
             Debug.Log("Audio conversion completed for: " + audio.name);
 
         }
     }
-    float[] FFT(AudioClip audio)//performs FFT on audio clip
+    void SetProgress(float value, string message)//update progress bar and text
     {
+        if (ProgressBar)  ProgressBar.value = value;
+        if (ProgressText)   ProgressText.text   = message;
+    }
+
+    IEnumerator FFT(AudioClip audio, System.Action<float[]> callback)//performs FFT on audio clip
+    {
+        SetProgress(0.3f, "Performing FFT on: " + audio.name);
         //audio data
         int windowSize = 1024;
         int sampleRate = audio.frequency;
@@ -99,6 +118,8 @@ public class AudioConverter : MonoBehaviour
                 prevMagnitude[k] = magnitude;
             }
             flux[frameIndex] = frameFlux;
+            yield return null;//yield to avoid freezing the main thread during FFT processing
+
         }
         float maxflux=0f;
         foreach(float f in flux)
@@ -115,11 +136,12 @@ public class AudioConverter : MonoBehaviour
                 flux[i] /= maxflux;
             }
         }
-        return flux; 
+        callback(flux);
     }
 
     float GetBPM(float[] flux, int sampleRate,int windowslide)
     {
+        SetProgress(0.5f, "Estimating BPM");
         float FPS = (float)sampleRate / windowslide;
         // Estimate BPM by finding the lag with the highest autocorrelation in the spectral flux
         int minLag= Mathf.RoundToInt(FPS * 60f / 250f);
