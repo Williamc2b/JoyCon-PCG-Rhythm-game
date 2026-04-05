@@ -1,16 +1,20 @@
 using System.Collections;
 using UnityEngine;
+using System.IO;
 using AForge;
 using AForge.Math;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using TMPro;//Plus library for complex numbers and FFT
+using TMPro;
+//source: https://www.aforgenet.com/framework/docs/html/namespace_a_forge_1_1_math.html
 
-
+[System.Serializable]
 public class NoteEvent
 {
     public float timestamp;
+    
 }
+[System.Serializable]
 public class Beatmap
 {
     public float bpm;
@@ -23,10 +27,10 @@ public class Beatmap
 public class AudioConverter : MonoBehaviour
 {
     public AudioSource audioSource;
-
     public GameObject LoadingScreen;
     public Slider ProgressBar;
     public TextMeshProUGUI ProgressText;
+    public string songFolder;
     public void ConvertAudio()
     {  
         AudioClip audio = audioSource.clip;
@@ -46,16 +50,15 @@ public class AudioConverter : MonoBehaviour
             yield return StartCoroutine(FFT(audio, result => flux = result));
             Debug.Log("Spectral flux calculated for: " + audio.name);
             Debug.Log("Flux length: " + flux.Length);
-
             SetProgress(0.6f, "Estimating BPM for: " + audio.name);
             yield return null; // 
             float bpm=GetBPM(flux, audio.frequency, 512);//get BPM from spectral flux
             Debug.Log("Estimated BPM: " + bpm);
             SetProgress(0.8f, "Generating beatmap for: " + audio.name);
             Beatmap beatmap=GenerateBeatmap(audio, bpm, audio.name, audio.length, flux);//generate beatmap from BPM and other info
-            string json = JsonUtility.ToJson(beatmap);
-            
-            yield return null; // Placeholder for beatmap generation
+            SaveBeatmap(beatmap, songFolder);//save beatmap to file
+            Debug.Log("Beatmap generated and saved for: " + audio.name);
+            yield return null;
             SetProgress(1f, "Conversion completed for: " + audio.name);
             Debug.Log("Audio conversion completed for: " + audio.name);
 
@@ -90,8 +93,8 @@ public class AudioConverter : MonoBehaviour
 
         //Implement hann window to reduce spectral leakage and smooth out the signal window
         int windowslide= windowSize / 2;
-        float[] flux = new float[monoSamples.Length-windowSize/windowslide];
-        float[] prevMagnitude = new float[windowslide];
+        float[] flux = new float[(monoSamples.Length - windowSize) / windowslide];
+        float[] prevMagnitude = new float[windowSize / 2]; 
         for (int i = 0; i+windowSize < monoSamples.Length; i += windowslide)
         {
             //Hanning window formula: w(n) = 0.5 * (1 - cos(2 * pi * n / (N - 1)))
@@ -118,7 +121,7 @@ public class AudioConverter : MonoBehaviour
                 prevMagnitude[k] = magnitude;
             }
             flux[frameIndex] = frameFlux;
-            yield return null;//yield to avoid freezing the main thread during FFT processing
+            yield return null;
 
         }
         float maxflux=0f;
@@ -144,12 +147,12 @@ public class AudioConverter : MonoBehaviour
         SetProgress(0.5f, "Estimating BPM");
         float FPS = (float)sampleRate / windowslide;
         // Estimate BPM by finding the lag with the highest autocorrelation in the spectral flux
-        int minLag= Mathf.RoundToInt(FPS * 60f / 250f);
-        int maxLag= Mathf.Min(Mathf.RoundToInt(FPS * 60f / 60f),flux.Length - 1);
+        int minBPM= Mathf.RoundToInt(FPS * 60f / 250f);
+        int maxBPM= Mathf.Min(Mathf.RoundToInt(FPS * 60f / 60f),flux.Length - 1);
         float bestScore = float.MinValue;
-        int   bestLag   = minLag;
-        // Autocorrelation to find periodicity in the flux
-        for (int lag = minLag; lag <= maxLag; lag++)
+        int   bestLag   = minBPM;
+        // Autocorrelation score for each potential BPM
+        for (int lag = minBPM; lag <= maxBPM; lag++)
         {
             float score = 0f;
             int n= flux.Length - lag;
@@ -165,11 +168,11 @@ public class AudioConverter : MonoBehaviour
             }
         }
         float rawBpm = 60f / (bestLag / FPS);
-        float bpm = CorrectTempo(rawBpm, flux, FPS, bestScore);
+        float bpm = BPMCorrection(rawBpm, flux, FPS, bestScore);
         bpm=Mathf.Round(bpm / 5f) * 5f;
         return bpm;
     }
-    float CorrectTempo(float bpm, float[] flux, float FPS, float bestScore)
+    float BPMCorrection(float bpm, float[] flux, float FPS, float bestScore)
     {
         float maxBpm    = 250f;
         float threshold = 0.85f;
@@ -188,9 +191,7 @@ public class AudioConverter : MonoBehaviour
             }
             halfScore /= n;
 
-            // Only double if the half-lag scores VERY close to the original
-            // A genuine slow song will score much worse at double tempo
-            // A misdetected fast song will score almost identically at double tempo
+            // Only double if the half-lag scores is close to the original
             if (halfScore >= bestScore * threshold)
             {
                 bpm = doubleBpm;
@@ -220,5 +221,66 @@ public class AudioConverter : MonoBehaviour
         float secondsPerBeat = 60f / bpm;
         float framesPerBeat = FPS * secondsPerBeat;
 
+        //calculate the mean, variance and standard deviation of flux to obtain threshold for note detection, any peaks in spectral flux that exceed the threshold will be considered note events and placed at those timestamps
+        float mean = 0f;
+        foreach (float f in flux)
+        {
+            mean += f;
+        }
+        mean /= flux.Length;
+
+        float variance = 0f;
+        foreach (float f in flux)
+        {
+            //variance formula: σ² = (1/N) * Σ(xᵢ - μ)²
+            variance += (f - mean) * (f - mean);
+        }
+
+        //standard deviation formula: σ = √σ²
+        float stdDev = Mathf.Sqrt(variance / flux.Length);
+
+        float tuner = 1.5f;//tuning parameter to adjust sensitivity of note detection
+        float threshold = mean + tuner * stdDev;
+        float framePos = 0f;
+
+        // Iterate through the spectral flux frames and place note events at peaks that exceed the threshold
+        while (framePos < flux.Length)
+        {
+            int frameIndex = Mathf.RoundToInt(framePos);
+            if (frameIndex >= flux.Length) break;
+
+
+            int searchRadius = Mathf.RoundToInt(framesPerBeat * 0.5f);
+            int searchStart  = Mathf.Max(0, frameIndex - searchRadius);
+            int searchEnd    = Mathf.Min(flux.Length - 1, frameIndex + searchRadius);
+
+            float peakValue = 0f;
+            int   peakFrame = frameIndex;
+            for (int i = searchStart; i <= searchEnd; i++)//search for local peak in spectral flux around the expected beat position
+            {
+                if (flux[i] > peakValue)
+                {
+                    peakValue = flux[i];
+                    peakFrame = i;
+                }
+            }
+
+            // Only place a note if the peak clears the threshold
+            if (peakValue >= threshold)
+            {
+                float timestamp = peakFrame / FPS; // convert frame → seconds
+                Newbeatmap.beatEvents.Add(new NoteEvent { timestamp = timestamp });
+            }
+
+            framePos += framesPerBeat; // advance exactly one beat
+        }
+        return Newbeatmap;
+    }
+    void SaveBeatmap(Beatmap beatmap, string songFolder)//save beatmap to JSON file in corresponding song folder
+    {
+        string json = JsonUtility.ToJson(beatmap, prettyPrint: true);
+        string path = Path.Combine(songFolder, beatmap.mapName + ".json");
+        File.WriteAllText(path, json);
+        Debug.Log("Beatmap saved to: " + path);
     }
 }
