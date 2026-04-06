@@ -328,7 +328,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: 100}
+  m_AnchoredPosition: {x: 300, y: 50}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &180531712
@@ -1260,6 +1260,7 @@ MonoBehaviour:
   LoadingScreen: {fileID: 180531710}
   ProgressBar: {fileID: 1719300295}
   ProgressText: {fileID: 573078066}
+  songFolder: 
 --- !u!1 &1667030557
 GameObject:
   m_ObjectHideFlags: 0
