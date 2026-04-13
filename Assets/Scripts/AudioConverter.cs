@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using System.IO;
-using AForge;
 using AForge.Math;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -11,7 +10,7 @@ using TMPro;
 [System.Serializable]
 public class NoteEvent
 {
-    public float timestamp;
+    public double timestamp;
     
 }
 [System.Serializable]
@@ -211,7 +210,7 @@ public class AudioConverter : MonoBehaviour
         Beatmap Newbeatmap = new Beatmap();
         Newbeatmap.mapName = mapName;
         Newbeatmap.bpm = bpm;
-        Newbeatmap.mapDuration = mapDuration;
+        Newbeatmap.mapDuration = Mathf.Round(mapDuration*1000) / 1000;
 
         float sampleRate = audio.frequency; // Assuming standard audio sample rate
         float windowSlide = 512; //
@@ -221,6 +220,7 @@ public class AudioConverter : MonoBehaviour
         float secondsPerBeat = 60f / bpm;
         float framesPerBeat = FPS * secondsPerBeat;
 
+        //statistic analysis of spectral flux 
         //calculate the mean, variance and standard deviation of flux to obtain threshold for note detection, any peaks in spectral flux that exceed the threshold will be considered note events and placed at those timestamps
         float mean = 0f;
         foreach (float f in flux)
@@ -239,7 +239,7 @@ public class AudioConverter : MonoBehaviour
         //standard deviation formula: σ = √σ²
         float stdDev = Mathf.Sqrt(variance / flux.Length);
 
-        float tuner = 1.5f;//tuning parameter to adjust sensitivity of note detection
+        float tuner = 2f;//tuning parameter to adjust sensitivity of note detection
         float threshold = mean + tuner * stdDev;
         float framePos = 0f;
 
@@ -268,7 +268,7 @@ public class AudioConverter : MonoBehaviour
             // Only place a note if the peak clears the threshold
             if (peakValue >= threshold)
             {
-                float timestamp = peakFrame / FPS; // convert frame → seconds
+                double timestamp = System.Math.Round(peakFrame / FPS, 3);
                 Newbeatmap.beatEvents.Add(new NoteEvent { timestamp = timestamp });
             }
 
