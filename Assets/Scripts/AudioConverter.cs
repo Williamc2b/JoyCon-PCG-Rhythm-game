@@ -8,9 +8,16 @@ using TMPro;
 //source: https://www.aforgenet.com/framework/docs/html/namespace_a_forge_1_1_math.html
 
 [System.Serializable]
+public class Notetypes
+{
+    public string name;
+}
+[System.Serializable]
 public class NoteEvent
 {
     public double timestamp;
+    public Notetypes type;
+    public double duration;
     
 }
 [System.Serializable]
@@ -30,6 +37,7 @@ public class AudioConverter : MonoBehaviour
     public Slider ProgressBar;
     public TextMeshProUGUI ProgressText;
     public string songFolder;
+    public string beatmapJson;
     public void ConvertAudio()
     {  
         AudioClip audio = audioSource.clip;
@@ -47,20 +55,19 @@ public class AudioConverter : MonoBehaviour
             SetProgress(0f, "Starting conversion for: " + audio.name);
             float[] flux=null;//perform FFT and get spectral flux
             yield return StartCoroutine(FFT(audio, result => flux = result));
-            Debug.Log("Spectral flux calculated for: " + audio.name);
-            Debug.Log("Flux length: " + flux.Length);
             SetProgress(0.6f, "Estimating BPM for: " + audio.name);
             yield return null; // 
             float bpm=GetBPM(flux, audio.frequency, 512);//get BPM from spectral flux
-            Debug.Log("Estimated BPM: " + bpm);
             SetProgress(0.8f, "Generating beatmap for: " + audio.name);
-            Beatmap beatmap=GenerateBeatmap(audio, bpm, audio.name, audio.length, flux);//generate beatmap from BPM and other info
-            SaveBeatmap(beatmap, songFolder);//save beatmap to file
-            Debug.Log("Beatmap generated and saved for: " + audio.name);
+            Beatmap Easy=GenerateBeatmap(audio, bpm, audio.name+" (Easy)", audio.length, flux, 1f, 2.5f);//generate beatmap from BPM and other info
+            Beatmap Medium=GenerateBeatmap(audio, bpm, audio.name+" (Medium)", audio.length, flux, 2f, 2f);//generate beatmap from BPM and other info
+            Beatmap Hard=GenerateBeatmap(audio, bpm, audio.name+" (Hard)", audio.length, flux, 4f, 1.5f);//generate beatmap from BPM and other info
+            SaveBeatmap(Easy, songFolder);//save beatmap to file
+            SaveBeatmap(Medium, songFolder);//save beatmap to file
+            SaveBeatmap(Hard, songFolder);//save beatmap to file
             yield return null;
+            LoadingScreen.SetActive(false);
             SetProgress(1f, "Conversion completed for: " + audio.name);
-            Debug.Log("Audio conversion completed for: " + audio.name);
-
         }
     }
     void SetProgress(float value, string message)//update progress bar and text
@@ -205,7 +212,7 @@ public class AudioConverter : MonoBehaviour
         return bpm;
     }
 
-    Beatmap GenerateBeatmap(AudioClip audio, float bpm, string mapName, float mapDuration, float[] flux)
+    Beatmap GenerateBeatmap(AudioClip audio, float bpm, string mapName, float mapDuration, float[] flux,float notedensity,float tuner)
     {
         Beatmap Newbeatmap = new Beatmap();
         Newbeatmap.mapName = mapName;
@@ -213,12 +220,13 @@ public class AudioConverter : MonoBehaviour
         Newbeatmap.mapDuration = Mathf.Round(mapDuration*1000) / 1000;
 
         float sampleRate = audio.frequency; // Assuming standard audio sample rate
-        float windowSlide = 512; //
-
-
+        float windowSlide = 512;
         float FPS = (float)sampleRate / windowSlide; // frames per second
         float secondsPerBeat = 60f / bpm;
         float framesPerBeat = FPS * secondsPerBeat;
+        
+        Notetypes tapenote = new Notetypes { name = "Tap Note" };
+        Notetypes holdnote = new Notetypes { name = "Hold Note" };
 
         //statistic analysis of spectral flux 
         //calculate the mean, variance and standard deviation of flux to obtain threshold for note detection, any peaks in spectral flux that exceed the threshold will be considered note events and placed at those timestamps
@@ -239,9 +247,12 @@ public class AudioConverter : MonoBehaviour
         //standard deviation formula: σ = √σ²
         float stdDev = Mathf.Sqrt(variance / flux.Length);
 
-        float tuner = 2f;//tuning parameter to adjust sensitivity of note detection
         float threshold = mean + tuner * stdDev;
         float framePos = 0f;
+
+        // Prevent double notes
+        int lastNoteFrame = -9999;
+        int minSpacing = Mathf.RoundToInt(framesPerBeat * 0.75f);
 
         // Iterate through the spectral flux frames and place note events at peaks that exceed the threshold
         while (framePos < flux.Length)
@@ -266,19 +277,57 @@ public class AudioConverter : MonoBehaviour
             }
 
             // Only place a note if the peak clears the threshold
-            if (peakValue >= threshold)
+            if (peakValue >= threshold && peakFrame - lastNoteFrame > minSpacing)
             {
-                double timestamp = System.Math.Round(peakFrame / FPS, 3);
-                Newbeatmap.beatEvents.Add(new NoteEvent { timestamp = timestamp });
-            }
+                float rawTime = peakFrame / FPS;
+                float beatIndex = Mathf.Round(rawTime / secondsPerBeat * notedensity);
+                float snappedTime = beatIndex * (secondsPerBeat / notedensity);
 
-            framePos += framesPerBeat; // advance exactly one beat
+                int holdFrames = 0;
+                int j = peakFrame + 1;
+
+                while (j < flux.Length && flux[j] > threshold * 0.6f)
+                {
+                    holdFrames++;
+                    j++;
+                }
+
+                double duration = holdFrames / FPS;
+
+                if (duration > secondsPerBeat * 0.5f)
+                {
+                    Newbeatmap.beatEvents.Add(new NoteEvent
+                    {
+                        timestamp = System.Math.Round(snappedTime, 3),
+                        type = holdnote,
+                        duration = System.Math.Round(duration, 3)
+                    });
+                }
+                else
+                {
+                    Newbeatmap.beatEvents.Add(new NoteEvent
+                    {
+                        timestamp = System.Math.Round(snappedTime, 3),
+                        type = tapenote,
+                        duration = 0
+                    });
+                }
+
+                lastNoteFrame = peakFrame;
+                framePos = Mathf.Max(peakFrame + framesPerBeat, j);
+            }
+        else
+        {
+            framePos += framesPerBeat;
         }
-        return Newbeatmap;
     }
+
+    return Newbeatmap;
+}
     void SaveBeatmap(Beatmap beatmap, string songFolder)//save beatmap to JSON file in corresponding song folder
     {
         string json = JsonUtility.ToJson(beatmap, prettyPrint: true);
+        beatmapJson = json;
         string path = Path.Combine(songFolder, beatmap.mapName + ".json");
         File.WriteAllText(path, json);
         Debug.Log("Beatmap saved to: " + path);
