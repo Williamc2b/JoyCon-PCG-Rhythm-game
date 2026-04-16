@@ -71,12 +71,10 @@ public class ImportMusicManager : MonoBehaviour
         AudioClip clip = DownloadHandlerAudioClip.GetContent(req);
         musicFile.clip = clip;
         clip.name = Path.GetFileNameWithoutExtension(path);
-        musicFile.Play();
-
         audioConverter.audioSource = musicFile;
         audioConverter.songFolder = songfolder;
-
         audioConverter.ConvertAudio();
+        musicFile.Play();
     }
 
     AudioType GetAudioType(string path)
