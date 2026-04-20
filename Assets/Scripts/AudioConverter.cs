@@ -265,7 +265,7 @@ public class AudioConverter : MonoBehaviour
                 }
             }
 
-                    if (peakValue >= threshold && peakFrame - lastNoteFrame > minSpacing)
+        if (peakValue >= threshold && peakFrame - lastNoteFrame > minSpacing)
         {
             // density filtering
             if (UnityEngine.Random.value > notedensity * 0.6f)
