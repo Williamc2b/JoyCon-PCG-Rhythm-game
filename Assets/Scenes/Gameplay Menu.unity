@@ -463,6 +463,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ScrollViewContent: {fileID: 1819508808}
   SongIconPrefab: {fileID: 351363816777679903, guid: 66957df565f13aa4a89d25cc6cabee1e, type: 3}
+  SongInfoDisplay: {fileID: 551869664}
 --- !u!1 &180531710
 GameObject:
   m_ObjectHideFlags: 0
@@ -787,11 +788,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 551869661}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -138}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 109}
   m_SizeDelta: {x: 80, y: 80}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &457352473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -885,6 +886,7 @@ GameObject:
   - component: {fileID: 551869661}
   - component: {fileID: 551869663}
   - component: {fileID: 551869662}
+  - component: {fileID: 551869664}
   m_Layer: 5
   m_Name: Map Display
   m_TagString: Untagged
@@ -912,11 +914,11 @@ RectTransform:
   - {fileID: 1166473601}
   m_Father: {fileID: 1318889079}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 348.88, y: -58.16568}
-  m_SizeDelta: {x: -697.76, y: -116.3365}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 326.24, y: 600.6635}
+  m_Pivot: {x: 1, y: 0}
 --- !u!114 &551869662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -955,6 +957,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 551869660}
   m_CullTransparentMesh: 1
+--- !u!114 &551869664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 551869660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83285534d1cbcb1469fbc0ca74f54fba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &573078064
 GameObject:
   m_ObjectHideFlags: 0
@@ -2411,6 +2425,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6496595401454325864, guid: 66957df565f13aa4a89d25cc6cabee1e, type: 3}
+      propertyPath: SongInfoDisplay
+      value: 
+      objectReference: {fileID: 551869664}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

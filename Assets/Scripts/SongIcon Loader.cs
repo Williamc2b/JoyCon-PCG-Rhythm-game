@@ -6,6 +6,7 @@ public class SongIconLoader : MonoBehaviour
 {
     public Transform ScrollViewContent; 
     public GameObject SongIconPrefab; 
+    public MapInfoDisplay SongInfoDisplay;
 
     void Start()
     {
@@ -30,6 +31,12 @@ public class SongIconLoader : MonoBehaviour
             string folderName = Path.GetFileName(folder);
 
             GameObject icon = Instantiate(SongIconPrefab, ScrollViewContent);
+            SongSelectBehaviour selectBehaviour = icon.GetComponent<SongSelectBehaviour>();
+            if (selectBehaviour != null)
+            {
+                selectBehaviour.Initialise(folder, SongInfoDisplay);
+                Debug.Log("Initialized SongSelectBehaviour for folder: " + folderName);
+            }
 
             TextMeshProUGUI text = icon.GetComponentInChildren<TextMeshProUGUI>();
 
