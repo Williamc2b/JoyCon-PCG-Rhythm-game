@@ -10,6 +10,7 @@ public class ImportMusicManager : MonoBehaviour
 {
     public AudioSource musicFile;
     public AudioConverter audioConverter;
+    public JSONConversion jsonConversion;
     void Start()
     {
         GetComponent<Button>().onClick.AddListener(ImportSong);
@@ -70,11 +71,10 @@ public class ImportMusicManager : MonoBehaviour
         AudioClip clip = DownloadHandlerAudioClip.GetContent(req);
         musicFile.clip = clip;
         clip.name = Path.GetFileNameWithoutExtension(path);
-        musicFile.Play();
         audioConverter.audioSource = musicFile;
         audioConverter.songFolder = songfolder;
         audioConverter.ConvertAudio();
-        Debug.Log("Audio conversion started for: " + clip.name);
+        musicFile.Play();
     }
 
     AudioType GetAudioType(string path)
@@ -84,4 +84,4 @@ public class ImportMusicManager : MonoBehaviour
         if (path.EndsWith(".ogg")) return AudioType.OGGVORBIS;
         return AudioType.UNKNOWN;
     }
-}
+}  
