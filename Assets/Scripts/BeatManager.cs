@@ -24,10 +24,22 @@ public class BeatManager : MonoBehaviour
     private Vector3 spawnoffset;
     private Quaternion rotation;
 
+    private string mapFolderPath;
+
+    public void setMapFolderPath(string path)
+    {
+        mapFolderPath = path;
+        Debug.Log("Map folder path set to: " + mapFolderPath);
+    }
 
     void Start()
     {
         tempo=tempo/60f;
+        string path = GameManager.Instance.selectedMapPath;
+
+        Debug.Log("Loaded map path: " + path);
+
+        setMapFolderPath(path);
     }
 
     void Setspawnoffset(int laneIndex)

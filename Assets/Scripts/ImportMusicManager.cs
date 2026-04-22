@@ -10,7 +10,6 @@ public class ImportMusicManager : MonoBehaviour
 {
     public AudioSource musicFile;
     public AudioConverter audioConverter;
-    public JSONConversion jsonConversion;
     void Start()
     {
         GetComponent<Button>().onClick.AddListener(ImportSong);

@@ -28,7 +28,7 @@ public class SongSelectBehaviour : MonoBehaviour
         Debug.Log("Clicked on song: " + folderName);
         if (SongInfoDisplay != null)
         {
-            SongInfoDisplay.displayInfo(folderName);
+            SongInfoDisplay.DisplayInfo(folderName,folderPath);
         }
     }
 }

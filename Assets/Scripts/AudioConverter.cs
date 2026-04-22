@@ -125,7 +125,7 @@ public class AudioConverter : MonoBehaviour
 
             int   frameIndex = i / windowslide;
             float frameFlux  = 0f;
-            for (int k = 0; k < windowslide/2; k++)
+            for (int k = 0; k < windowSize/2; k++)
             {
                 float magnitude   = Mathf.Sqrt((float)(complexSamples[k].Re * complexSamples[k].Re + complexSamples[k].Im * complexSamples[k].Im));
                 float changeinMag = magnitude - prevMagnitude[k];
