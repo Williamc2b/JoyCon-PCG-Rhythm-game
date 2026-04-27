@@ -10,10 +10,16 @@ public class PlayButtonBehaviour : MonoBehaviour
     public string[] JSONmapFiles;
     private string mapFolderPath;
     public BeatManager beatManager;
+    public AudioClip selectedMusicClip;
     public void setMapFolderPath(string[] path)
     {
         JSONmapFiles = path;
         Debug.Log("Map folder path set to: " + string.Join(", ", JSONmapFiles));
+    }
+    public void setSelectedMusicClip(AudioClip clip)
+    {
+        selectedMusicClip = clip;
+        Debug.Log("Selected music clip set to: " + selectedMusicClip.name);
     }
     void Start()
     {
@@ -47,7 +53,7 @@ public class PlayButtonBehaviour : MonoBehaviour
         }
         Debug.Log("Starting game with map folder path: " + mapFolderPath);
         GameManager.Instance.selectedMapPath = mapFolderPath;
-
+        GameManager.Instance.selectedMusicClip = selectedMusicClip;
         SceneManager.LoadScene("MainGameplay");
 
     }

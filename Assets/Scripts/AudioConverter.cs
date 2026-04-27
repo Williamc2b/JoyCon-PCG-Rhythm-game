@@ -64,9 +64,9 @@ public class AudioConverter : MonoBehaviour
             float bpm = GetBPM(flux, audio.frequency, 512);
             SetProgress(0.8f, "Generating beatmap for: " + audio.name);
 
-            Beatmap Easy   = GenerateBeatmap(audio, bpm, audio.name + " (Easy)",   audio.length, flux, 0.7f, 2.0f);
-            Beatmap Medium = GenerateBeatmap(audio, bpm, audio.name + " (Medium)", audio.length, flux, 1.0f, 1.5f);
-            Beatmap Hard   = GenerateBeatmap(audio, bpm, audio.name + " (Hard)",   audio.length, flux, 1.6f, 1.0f);
+            Beatmap Easy   = GenerateBeatmap(audio, bpm, audio.name + " (Easy)",   audio.length, flux, 0.5f, 1.2f);
+            Beatmap Medium = GenerateBeatmap(audio, bpm, audio.name + " (Medium)", audio.length, flux, 0.9f, 1.0f);
+            Beatmap Hard   = GenerateBeatmap(audio, bpm, audio.name + " (Hard)",   audio.length, flux, 1.3f, 0.9f);
             
             SaveBeatmap(Easy,   songFolder);
             SaveBeatmap(Medium, songFolder);
