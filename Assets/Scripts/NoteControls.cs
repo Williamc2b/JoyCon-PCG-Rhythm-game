@@ -6,6 +6,7 @@ public class NoteControls : MonoBehaviour
     public GameObject JudgementLine;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public Lane lane;
+    public ScoreManager scoreManager;
     void Start()
     {
         lane = JudgementLine.GetComponent<Lane>();
@@ -23,6 +24,10 @@ public class NoteControls : MonoBehaviour
             {
                 Destroy(gameObject);
                 Debug.Log("Note Hit!");
+                if (scoreManager != null)
+                {
+                    scoreManager.notehit(100);
+                }
             }
         }
         else
@@ -31,6 +36,10 @@ public class NoteControls : MonoBehaviour
             {
                 Destroy(gameObject);
                 Debug.Log("Missed Note!");
+                if (scoreManager != null)
+                {
+                    scoreManager.notemiss();
+                }
             }
         }
 

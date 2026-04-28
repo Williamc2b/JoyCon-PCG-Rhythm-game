@@ -64,9 +64,9 @@ public class AudioConverter : MonoBehaviour
             float bpm = GetBPM(flux, audio.frequency, 512);
             SetProgress(0.8f, "Generating beatmap for: " + audio.name);
 
-            Beatmap Easy   = GenerateBeatmap(audio, bpm, audio.name + " (Easy)",   audio.length, flux, 0.5f, 1.2f);
-            Beatmap Medium = GenerateBeatmap(audio, bpm, audio.name + " (Medium)", audio.length, flux, 0.9f, 1.0f);
-            Beatmap Hard   = GenerateBeatmap(audio, bpm, audio.name + " (Hard)",   audio.length, flux, 1.3f, 0.9f);
+            Beatmap Easy   = GenerateBeatmap(audio, bpm, audio.name + " (Easy)",   audio.length, flux, 0.5f, 2.0f,9f);
+            Beatmap Medium = GenerateBeatmap(audio, bpm, audio.name + " (Medium)", audio.length, flux, 1.0f, 1.5f,6f);
+            Beatmap Hard   = GenerateBeatmap(audio, bpm, audio.name + " (Hard)",   audio.length, flux, 2.0f, 0.7f,4f);
             
             SaveBeatmap(Easy,   songFolder);
             SaveBeatmap(Medium, songFolder);
@@ -211,7 +211,7 @@ public class AudioConverter : MonoBehaviour
         return bpm;
     }
 
-    Beatmap GenerateBeatmap(AudioClip audio, float bpm, string mapName, float mapDuration, float[] flux, float notedensity, float tuner)
+    Beatmap GenerateBeatmap(AudioClip audio, float bpm, string mapName, float mapDuration, float[] flux, float notedensity, float tuner,float maxHoldSeconds)
     {
         Beatmap Newbeatmap    = new Beatmap();
         Newbeatmap.mapName    = mapName;
@@ -280,7 +280,6 @@ public class AudioConverter : MonoBehaviour
             note.timestamp = timestamp;
 
             float minHoldSeconds = 3f;
-            float maxHoldSeconds = 9f;
 
             int lookAheadMin = Mathf.RoundToInt(minHoldSeconds * FPS);
             int lookAheadMax = Mathf.Min(Mathf.RoundToInt(maxHoldSeconds * FPS), flux.Length - 1 - peakFrame);
