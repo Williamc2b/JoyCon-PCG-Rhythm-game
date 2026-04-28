@@ -18,16 +18,13 @@ public class PauseScreenManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (PauseScreenUI.activeSelf)
+            if(isPaused)
             {
-                if(isPaused)
-                {
-                    ResumeGame();
-                }
-                else
-                {
-                    PauseGame();
-                }
+                ResumeGame();
+            }
+            else
+            {
+                PauseGame();
             }
         }
     }
@@ -51,6 +48,6 @@ public class PauseScreenManager : MonoBehaviour
     void QuitGame()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("SongSelect");
+        SceneManager.LoadScene("Gameplay Menu");
     }
 }
