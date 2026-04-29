@@ -30,6 +30,7 @@ public class HoldnoteControls : MonoBehaviour
     void Start()
     {
         lane = JudgementLine.GetComponent<Lane>();
+        scoreManager = GameObject.Find("ScoreManager").GetComponent<ScoreManager>();
     }
 
     void Update()

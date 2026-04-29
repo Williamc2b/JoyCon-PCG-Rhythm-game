@@ -10,6 +10,7 @@ public class NoteControls : MonoBehaviour
     void Start()
     {
         lane = JudgementLine.GetComponent<Lane>();
+        scoreManager = GameObject.Find("ScoreManager").GetComponent<ScoreManager>();
     }
 
     // Update is called once per frame

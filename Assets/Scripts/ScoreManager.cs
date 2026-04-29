@@ -22,6 +22,7 @@ public class ScoreManager : MonoBehaviour
     {
         scoreText.text = "Score: " + score;
         comboText.text = "Combo: " + combo;
+        Debug.Log("Score updated: " + score + ", Combo: " + combo);
     }
     
 }

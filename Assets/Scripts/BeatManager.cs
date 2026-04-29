@@ -32,7 +32,7 @@ public class BeatManager : MonoBehaviour
     private List<NoteEvent> pendingNotes;
     private AudioSource musicSource;
     private int currentNoteIndex;
-    private bool isPlaying = false;
+
 
     public void setMapFolderPath(string path)
     {
@@ -71,7 +71,6 @@ public class BeatManager : MonoBehaviour
     {
         // Wait for audio to start
         musicSource.Play();
-        isPlaying = true;
         currentNoteIndex = 0;
 
         float travelTime = CalculateTravelTime();
@@ -92,7 +91,6 @@ public class BeatManager : MonoBehaviour
             SpawnNoteFromEvent(noteEvent);
             currentNoteIndex++;
         }
-
         Debug.Log("All notes spawned");
     }   
     float CalculateTravelTime()
