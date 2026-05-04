@@ -7,6 +7,7 @@ public class SongSelectBehaviour : MonoBehaviour
     public UnityEngine.UI.Button button;
     private string folderPath;
     private string folderName;
+    private AudioClip AudioClip;
 
     public MapInfoDisplay SongInfoDisplay;
 
@@ -28,7 +29,7 @@ public class SongSelectBehaviour : MonoBehaviour
         Debug.Log("Clicked on song: " + folderName);
         if (SongInfoDisplay != null)
         {
-            SongInfoDisplay.displayInfo(folderName);
+            SongInfoDisplay.StartCoroutine(SongInfoDisplay.DisplayInfo(folderName, folderPath));
         }
     }
 }

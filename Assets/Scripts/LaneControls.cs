@@ -34,7 +34,6 @@ public class Lane : MonoBehaviour
             flickDetected = true;
             flickedThisFrame = true;
             lastFlickTime = Time.time;
-            Debug.Log($"Flick detected at {Time.time}");
         }
         else
         {

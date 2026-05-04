@@ -25,9 +25,12 @@ public class HoldnoteControls : MonoBehaviour
     private float originalBodySize = 0f;
     private float bodySizeSign = 1f;
 
+    public ScoreManager scoreManager;
+
     void Start()
     {
         lane = JudgementLine.GetComponent<Lane>();
+        scoreManager = GameObject.Find("ScoreManager").GetComponent<ScoreManager>();
     }
 
     void Update()
@@ -57,6 +60,10 @@ public class HoldnoteControls : MonoBehaviour
             }
 
             Debug.Log("Hit head!");
+            if (scoreManager != null)
+            {
+                scoreManager.notehit(100);
+            }
         }
 
         // Missed note
@@ -64,6 +71,10 @@ public class HoldnoteControls : MonoBehaviour
         {
             Debug.Log("Hold note missed!");
             Destroy(gameObject);
+            if (scoreManager != null)
+            {
+                scoreManager.notemiss();
+            }
             return;
         }
 
@@ -94,6 +105,10 @@ public class HoldnoteControls : MonoBehaviour
             Debug.Log("Released too early!");
             if (body != null) Destroy(body.gameObject);
             Destroy(gameObject);
+            if (scoreManager != null)
+            {
+                scoreManager.notemiss();
+            }
             return;
         }
 
@@ -120,6 +135,10 @@ public class HoldnoteControls : MonoBehaviour
         {
             Debug.Log("Hold note failed due to holding too long!");
             Destroy(gameObject);
+            if (scoreManager != null)
+            {
+                scoreManager.notemiss();
+            }
             return;
         }
         // Wait for release after note completes
@@ -129,6 +148,10 @@ public class HoldnoteControls : MonoBehaviour
             {
                 Debug.Log("Hold note fully hit!");
                 Destroy(gameObject);
+                if (scoreManager != null)
+                {
+                    scoreManager.notehit(100);
+                }
                 return;
             }
             else

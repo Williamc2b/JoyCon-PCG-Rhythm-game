@@ -13,8 +13,12 @@ public class SongIconLoader : MonoBehaviour
         LoadSongs();
     }
 
-    void LoadSongs()
+    public void LoadSongs()
     {
+        foreach (Transform child in ScrollViewContent) // Clear existing icons
+        {
+            Destroy(child.gameObject);
+        }
         string path =Path.Combine(Application.persistentDataPath, "Songs");
 
         if (!Directory.Exists(path))
