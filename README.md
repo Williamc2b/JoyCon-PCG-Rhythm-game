@@ -4,7 +4,7 @@
 ## Built With
 
 ### Unity Version
-- Unity: `6000.0.24f1` (or your version)
+- Unity: `6000.0.24f1` 
 
 
 ## External Libraries
