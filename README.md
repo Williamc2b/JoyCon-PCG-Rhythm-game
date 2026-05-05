@@ -23,7 +23,8 @@
 ---
 
 ## How to Run
-Download the Project and run the .exe file
+Download the Project but downloading the build folder in this repository and running the exe file.
+-https://github.com/Williamc2b/JoyCon-PCG-Rhythm-game-Build.git
 
 
 
