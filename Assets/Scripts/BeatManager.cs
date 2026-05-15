@@ -3,6 +3,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using System.IO;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class Hold_Note
@@ -32,8 +33,6 @@ public class BeatManager : MonoBehaviour
     private List<NoteEvent> pendingNotes;
     private AudioSource musicSource;
     private int currentNoteIndex;
-
-
     public void setMapFolderPath(string path)
     {
         mapFolderPath = path;
@@ -57,12 +56,20 @@ public class BeatManager : MonoBehaviour
         musicSource.clip = musicClip;
         LoadBeatmap();
     }
+    void Update()
+    {
+        if(musicSource.isPlaying==false)
+        {
+            SceneManager.LoadScene("Gameplay Menu");
+        }
+    }
     void LoadBeatmap()
     {
         // Read and deserialise the JSON file
         string json = File.ReadAllText(mapFolderPath);
         beatmap = JsonUtility.FromJson<Beatmap>(json);
         pendingNotes = new List<NoteEvent>(beatmap.beatEvents);
+        tempo = beatmap.bpm / 60f; // Convert BPM to seconds per beat
         // Start playing
         StartCoroutine(PlayBeatmap());
     }
